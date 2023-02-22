@@ -5,7 +5,8 @@ w, h, ch, data = dpg.load_image('./img/1_main.jpg')
 
 
 dpg.create_context()
-dpg.create_viewport(title="Diplom", width=w, height=h+50, max_width= w, max_height=h+50)
+dpg.create_viewport(title="Diplom", width=w, height=h +
+                    50, max_width=w, max_height=h+50)
 
 
 with dpg.texture_registry(show=False):
@@ -33,43 +34,66 @@ with dpg.texture_registry(show=False):
     display = dpg.add_static_texture(
         width=w_d, height=h_d, default_value=data_d, tag='display')
 
-list_str = ["КОДЕР \nГОТОВ", "ПАРАМЕТРЫ \n        АТ", "КОНТРОЛЬ\n ПИТАНИЯ", "РК", "ДПК"]
+list_str = ["КОДЕР\nГОТОВ", "ПАРАМЕТРЫ\n          АТ",
+            "КОНТРОЛЬ\n ПИТАНИЯ", "РК\n", "ДПК\n"]
 
 with dpg.font_registry() as main_font_reg:
-    with dpg.font("NotoSerifCJKjp-Medium.otf", 18, default_font= True, tag= 'Main_font'):
+    with dpg.font("NotoSerifCJKjp-Medium.otf", 40, default_font=True, tag='Main_font'):
         dpg.add_font_range_hint(dpg.mvFontRangeHint_Cyrillic)
 dpg.bind_font('Main_font')
 
+# Координаты для тумблеров включения и текста
+
 tmbs_start_coord = (175, 850)
-text_coords = (350, 140)
+text_coords = (430, 120)
 
-
+# Магия чисел с координатами следующих тумблеров (К начальной координате добовляем координату одного тумблера)
 coord_tmb_lst = {'pit_tmb': tmbs_start_coord, 'sam1_tmb': (tmbs_start_coord[0] + w_t, tmbs_start_coord[1]),
                  'sil1_tmb': (tmbs_start_coord[0] + w_t*2, tmbs_start_coord[1]), 'sam2_tmb': (tmbs_start_coord[0] + w_t*3, tmbs_start_coord[1]),
                  'sil2_tmb': (tmbs_start_coord[0] + w_t * 4, tmbs_start_coord[1])}
 tmb_size = (w_t, h_t)
 
+# Сложить два тьюпла чтобы в draw_image можно было быстро определить pmax и pmin
 
-def sum_tpl(x: tuple, y: tuple) -> tuple:
+
+def sum_tpl(x: tuple[int, int], y: tuple[int, int]) -> tuple[int, ...]:
     return tuple(np.add(x, y))
 
+# Сокращенная запись отрисовки тумблера
 
-def draw_tmb(name, tmb_state=tmb) -> None:
+
+def draw_tmb(name: str, tmb_state: int | str =tmb) -> None:
     dpg.draw_image(tmb_state, tuple(coord_tmb_lst[name]), sum_tpl(tmb_size, coord_tmb_lst[name]), uv_min=(0, 0),
                    uv_max=(1, 1), parent='sprites_drawlist', tag=name)
+
+# В ДПГ мы не можем узнать шириниу объекта draw_tex, на глаз было определен размер одного символа (32ед) и теперь мы вычисляем
+# ширину строки "ручками" и вычитаем это число из координаты от которой мы строим текст.
+
+
+def draw_text_width(string: str) -> tuple[float, int]:
+    str_list = string.split('\n')
+    coord_text_edit_tuple = (len(str_list[0]) / 2 * 32, 0)
+    text_coords_edit = (
+        text_coords[0] - coord_text_edit_tuple[0], text_coords[1])
+    return text_coords_edit
+
+# Отрисовка текста
 
 
 def draw_text(text=""):
     dpg.delete_item('text')
-    dpg.draw_text(text_coords, text=text, size=60, color=(
+    dpg.draw_text(draw_text_width(text), text=text, size=60, color=(
         0, 255, 255), parent='sprites_drawlist', tag='text')
-    print(dpg.get_item_width('text'))
+
+# Позиция другая, поэтому отрисовываем тумблер котроля отдельной функциекй
 
 
-def draw_cntr_tmb(name: str, tmb_s=tmb) -> None:
+def draw_cntr_tmb(name: str, tmb_s: int | str=tmb) -> None:
     dpg.delete_item(name)
     dpg.draw_image(tmb_s, (680, 540), (w_t+680, h_t+540), uv_min=(0, 0),
                    uv_max=(1, 1), parent='sprites_drawlist', tag=name)
+
+# Самая банальная проверка на "включенность" всех тумблеров (вызывается каждое нажатие на тумблер)
 
 
 def check_tmb():
@@ -91,6 +115,8 @@ def check_tmb():
                        uv_max=(1, 1), parent='sprites_drawlist', tag='led_img')
         dpg.set_value('pui_status', value=False)
         draw_text()
+
+# Далее работа со стрелами, тоже самый банальный вариант, берем просто счетчик и сбарасываем его каждый раз как дошли до конца списка
 
 
 counter = 0
@@ -118,10 +144,15 @@ def dwn_arrow():
         draw_text(list_str[counter])
 
 
+# Колбэки для тумблеров
+
 def contr_tmp():
+    # Узнали в каком сейчас состоянии тумблер
     state = dpg.get_value('bool_contrl')
     if state:
+        # Изменили это состояние
         dpg.set_value('bool_contrl', value=False)
+        # Удалили старый и нарисовали новый
         draw_cntr_tmb('contrl_tmp')
     else:
         dpg.set_value('bool_contrl', value=True)
@@ -187,6 +218,8 @@ def sil2_tmb():
         draw_tmb('sil2_tmb', tmb_state=tmb_off)
     check_tmb()
 
+# Нужды ДПГ по отрисовке
+
 
 with dpg.value_registry():
     dpg.add_bool_value(default_value=False, tag="pui_status")
@@ -198,18 +231,17 @@ with dpg.value_registry():
     dpg.add_bool_value(default_value=False, tag="bool_sil2")
     string = dpg.add_string_value(default_value=list_str[0], tag='string')
 
-with dpg.viewport_drawlist(front=False, tag='main_img'):
+with dpg.viewport_drawlist(front=True, tag='main_img'):
     dpg.draw_image(main, (0, 0), (w, h), uv_min=(
         0, 0), uv_max=(1, 1), tag='show_img')
 
 
-with dpg.viewport_drawlist(front=False, tag='sprites_drawlist'):
+with dpg.viewport_drawlist(front=True, tag='sprites_drawlist'):
     draw_tmb('pit_tmb')
     draw_tmb('sam1_tmb')
     draw_tmb('sil1_tmb')
     draw_tmb('sam2_tmb')
     draw_tmb('sil2_tmb')
-
     dpg.draw_image(tmb, (680, 540), (w_t+680, h_t+540),
                    uv_min=(0, 0), uv_max=(1, 1), tag='contrl_tmb')
 
@@ -217,7 +249,6 @@ with dpg.viewport_drawlist(front=False, tag='sprites_drawlist'):
                    uv_min=(0, 0), uv_max=(1, 1), tag='led_img')
 
     draw_text()
-
 
 with dpg.window(width=w, height=h, no_background=True, pos=[0, 0], no_move=True):
     dpg.add_button(callback=pit_tmb, width=100, height=100,
@@ -230,7 +261,6 @@ with dpg.window(width=w, height=h, no_background=True, pos=[0, 0], no_move=True)
                    pos=tuple(coord_tmb_lst['sam2_tmb']))
     dpg.add_button(callback=sil2_tmb, width=100, height=100,
                    pos=tuple(coord_tmb_lst['sil2_tmb']))
-
     dpg.add_button(width=90, height=90, pos=[85, 530])
     dpg.add_button(callback=contr_tmp, width=90, height=90, pos=[680, 540])
     dpg.add_button(callback=dwn_arrow, width=90, height=90, pos=[460, 670])
