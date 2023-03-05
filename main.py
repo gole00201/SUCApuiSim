@@ -34,7 +34,7 @@ with dpg.texture_registry(show=False):
     display = dpg.add_static_texture(
         width=w_d, height=h_d, default_value=data_d, tag='display')
 
-list_str = ["КОДЕР\nГОТОВ", "ПАРАМЕТРЫ\n          АТ",
+list_main_menu = ["ПАРАМЕТРЫ\n          АC",
             "КОНТРОЛЬ\n ПИТАНИЯ", "РК\n", "ДПК\n"]
 
 with dpg.font_registry() as main_font_reg:
@@ -103,7 +103,7 @@ def check_tmb():
     sam2 = dpg.get_value('bool_sam2')
     sil2 = dpg.get_value('bool_sil2')
     if pit and sam1 and sil1 and sam2 and sil2:
-        draw_text(dpg.get_value("string"))
+        draw_text(dpg.get_value("main_string"))
         time.sleep(1)
         dpg.delete_item('led_img')
         dpg.draw_image(led_on, (250, 380), (w_l+250, h_l+380), uv_min=(0, 0),
@@ -123,25 +123,35 @@ counter = 0
 
 
 def up_arrow():
-    if dpg.get_value('pui_status'):
-        print('\a')
+    if dpg.get_value('pui_status') and not dpg.get_value('in_pr'):
         global counter
         counter += 1
-        if counter >= len(list_str):
+        if counter >= len(list_main_menu):
             counter = 0
-        dpg.delete_item('text')
-        draw_text(list_str[counter])
+        draw_text(list_main_menu[counter])
 
 
 def dwn_arrow():
-    if dpg.get_value('pui_status'):
-        print('\a')
+    if dpg.get_value('pui_status') and not dpg.get_value('in_pr'):
         global counter
         counter -= 1
         if counter < 0:
-            counter = len(list_str) - 1
-        dpg.delete_item('text')
-        draw_text(list_str[counter])
+            counter = len(list_main_menu) - 1
+        draw_text(list_main_menu[counter])
+
+def in_():
+    if dpg.get_value('pui_status') and counter == 0:
+        dpg.set_value('in_pr', True)
+        # Добавить отрисовку меню сюда!
+        draw_text()
+        
+
+def out_():
+    global counter
+    if dpg.get_value('pui_status') and dpg.get_value('in_pr'):
+        dpg.set_value('in_pr', False)
+        draw_text(list_main_menu[counter])
+    
 
 
 # Колбэки для тумблеров
@@ -229,9 +239,10 @@ with dpg.value_registry():
     dpg.add_bool_value(default_value=False, tag="bool_sil1")
     dpg.add_bool_value(default_value=False, tag="bool_sam2")
     dpg.add_bool_value(default_value=False, tag="bool_sil2")
-    string = dpg.add_string_value(default_value=list_str[0], tag='string')
+    dpg.add_bool_value(default_value=False, tag="in_pr")
+    dpg.add_string_value(default_value="КОДЕР\nГОТОВ", tag='main_string')
 
-with dpg.viewport_drawlist(front=True, tag='main_img'):
+with dpg.viewport_drawlist(front=False, tag='main_img'):
     dpg.draw_image(main, (0, 0), (w, h), uv_min=(
         0, 0), uv_max=(1, 1), tag='show_img')
 
@@ -265,8 +276,8 @@ with dpg.window(width=w, height=h, no_background=True, pos=[0, 0], no_move=True)
     dpg.add_button(callback=contr_tmp, width=90, height=90, pos=[680, 540])
     dpg.add_button(callback=dwn_arrow, width=90, height=90, pos=[460, 670])
     dpg.add_button(callback=up_arrow, width=90, height=90, pos=[300, 670])
-    dpg.add_button(width=90, height=90, pos=[140, 670])
-    dpg.add_button(width=90, height=90, pos=[630, 670])
+    dpg.add_button(callback= out_, width=90, height=90, pos=[140, 670])
+    dpg.add_button(callback= in_, width=90, height=90, pos=[630, 670])
 
 dpg.setup_dearpygui()
 dpg.show_viewport()
