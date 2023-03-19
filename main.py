@@ -34,8 +34,18 @@ with dpg.texture_registry(show=False):
     display = dpg.add_static_texture(
         width=w_d, height=h_d, default_value=data_d, tag='display')
 
-list_main_menu = ["ПАРАМЕТРЫ\n          АC",
+list_main_menu:list[str] = ["ПАРАМЕТРЫ\n          АC",
             "КОНТРОЛЬ\n ПИТАНИЯ", "РК\n", "ДПК\n"]
+
+list_sub_menu:list[str] = [" AC\n1-24", "  AC\n25-48", "AC\n49", "AC\n50", 
+                           "  AC\n55-70", "Трез", "ТМП", "СКТ", 
+                           "СЛС", "115 В", "27 В", "ПЧК", "РК"]
+
+list_as_menu:list[str] = [f"АС{i}" for i in range(25, 49)]
+
+
+list_menu:list[list[str]] = [list_main_menu, list_sub_menu, list_as_menu]
+
 
 with dpg.font_registry() as main_font_reg:
     with dpg.font("NotoSerifCJKjp-Medium.otf", 40, default_font=True, tag='Main_font'):
@@ -118,39 +128,51 @@ def check_tmb():
 
 # Далее работа со стрелами, тоже самый банальный вариант, берем просто счетчик и сбарасываем его каждый раз как дошли до конца списка
 
-
-counter = 0
-
+counter:int = 0
+counter_main:int = 0
+counter_sub:int = 0
+counter_as:int = 0
+input_counter:int = 0
 
 def up_arrow():
-    if dpg.get_value('pui_status') and not dpg.get_value('in_pr'):
-        global counter
+    if dpg.get_value('pui_status'):
+        global counter_main, counter_sub, counter_as, counter
         counter += 1
-        if counter >= len(list_main_menu):
+        if counter >= len(list_menu[dpg.get_value('in_pr')]):
             counter = 0
-        draw_text(list_main_menu[counter])
+        print(counter)
+        draw_text(list_menu[dpg.get_value('in_pr')][counter])
 
 
 def dwn_arrow():
-    if dpg.get_value('pui_status') and not dpg.get_value('in_pr'):
-        global counter
-        counter -= 1
-        if counter < 0:
-            counter = len(list_main_menu) - 1
-        draw_text(list_main_menu[counter])
+    if dpg.get_value('pui_status'):
+        global counter_main, counter_sub, counter_as, counter
+        if counter == 0:
+            counter = len(list_menu[dpg.get_value('in_pr')]) - 1 
+        else:
+            counter = counter - 1
+        draw_text(list_menu[dpg.get_value('in_pr')][counter])
+        print(counter)
 
 def in_():
-    if dpg.get_value('pui_status') and counter == 0:
-        dpg.set_value('in_pr', True)
-        # Добавить отрисовку меню сюда!
-        draw_text()
-        
+    global counter_main, counter_sub, counter_as, counter
+    current_text:str = list_menu[dpg.get_value('in_pr')][counter]
+    print(current_text)
+    if dpg.get_value('in_pr')  == 2:
+        return
+    if dpg.get_value('pui_status') and ( current_text == "ПАРАМЕТРЫ\n          АC" or current_text == "  AC\n25-48"):
+        dpg.set_value('in_pr', dpg.get_value('in_pr') + 1)
+        draw_text(list_menu[dpg.get_value('in_pr')][0])
+        counter = 0
+    else: 
+        return
 
 def out_():
-    global counter
+    global counter_main, counter_sub, counter_as, counter
     if dpg.get_value('pui_status') and dpg.get_value('in_pr'):
-        dpg.set_value('in_pr', False)
-        draw_text(list_main_menu[counter])
+        dpg.set_value('in_pr', dpg.get_value('in_pr') - 1)
+        draw_text(list_menu[dpg.get_value('in_pr')][0])
+        counter = 0
     
 
 
@@ -239,10 +261,10 @@ with dpg.value_registry():
     dpg.add_bool_value(default_value=False, tag="bool_sil1")
     dpg.add_bool_value(default_value=False, tag="bool_sam2")
     dpg.add_bool_value(default_value=False, tag="bool_sil2")
-    dpg.add_bool_value(default_value=False, tag="in_pr")
+    dpg.add_int_value(default_value=0, tag="in_pr")
     dpg.add_string_value(default_value="КОДЕР\nГОТОВ", tag='main_string')
 
-with dpg.viewport_drawlist(front=False, tag='main_img'):
+with dpg.viewport_drawlist(front=True, tag='main_img'):
     dpg.draw_image(main, (0, 0), (w, h), uv_min=(
         0, 0), uv_max=(1, 1), tag='show_img')
 
