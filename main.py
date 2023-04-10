@@ -6,7 +6,7 @@ w, h, ch, data = dpg.load_image('./img/1_main.jpg')
 
 dpg.create_context()
 dpg.create_viewport(title="Diplom", width=w, height=h +
-                    50, max_width=w, max_height=h+50)
+                    50, max_width=w, max_height=h+50, resizable=False)
 
 
 with dpg.texture_registry(show=False):
@@ -283,7 +283,7 @@ with dpg.viewport_drawlist(front=True, tag='sprites_drawlist'):
 
     draw_text()
 
-with dpg.window(width=w, height=h, no_background=True, pos=[0, 0], no_move=True):
+with dpg.window(width=w, height=h, no_background=True, pos=[0, 0], no_move=True, no_resize=True, max_size=(w, h), min_size=(w,  h)):
     dpg.add_button(callback=pit_tmb, width=100, height=100,
                    pos=tuple(coord_tmb_lst['pit_tmb']))
     dpg.add_button(callback=sam1_tmb, width=100, height=100,
