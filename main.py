@@ -5,8 +5,7 @@ w, h, ch, data = dpg.load_image('./img/1_main.jpg')
 
 
 dpg.create_context()
-dpg.create_viewport(title="Diplom", width=w, height=h +
-                    50, max_width=w, max_height=h+50, resizable=False)
+dpg.create_viewport(title="Diplom", width=w, height=h + 50, max_width=w, max_height=h+50, resizable=False)
 
 
 with dpg.texture_registry(show=False):
@@ -76,23 +75,9 @@ def draw_tmb(name: str, tmb_state: int | str =tmb) -> None:
     dpg.draw_image(tmb_state, tuple(coord_tmb_lst[name]), sum_tpl(tmb_size, coord_tmb_lst[name]), uv_min=(0, 0),
                    uv_max=(1, 1), parent='sprites_drawlist', tag=name)
 
-# В ДПГ мы не можем узнать шириниу объекта draw_tex, на глаз было определен размер одного символа (32ед) и теперь мы вычисляем
-# ширину строки "ручками" и вычитаем это число из координаты от которой мы строим текст.
-
-
-def draw_text_width(string: str) -> tuple[float, int]:
-    str_list = string.split('\n')
-    coord_text_edit_tuple = (len(max(i for i in str_list)) / 2 * 32, 0)
-    text_coords_edit = (
-        text_coords[0] - coord_text_edit_tuple[0], text_coords[1])
-    return text_coords_edit
 
 # Отрисовка текста
-
-
 def draw_text(text=""):
-    # dpg.draw_text(draw_text_width(text), text=text, size=60, color=(
-    #     0, 255, 255), parent='sprites_drawlist', tag='text')
     dpg.set_item_label(item= 'text_b', label= text)
 
 # Позиция другая, поэтому отрисовываем тумблер котроля отдельной функциекй
