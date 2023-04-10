@@ -249,10 +249,6 @@ with dpg.value_registry():
     dpg.add_int_value(default_value=0, tag="in_pr")
     dpg.add_string_value(default_value="КОДЕР\nГОТОВ", tag='main_string')
 
-# with dpg.viewport_drawlist(front=False, tag='main_img'):
-#     dpg.draw_image(main, (0, 0), (w, h), uv_min=(
-#         0, 0), uv_max=(1, 1), tag='show_img')
-
 
 with dpg.viewport_drawlist(front=False, tag='sprites_drawlist'):
     dpg.draw_image(main, (0, 0), (w, h), uv_min=(
