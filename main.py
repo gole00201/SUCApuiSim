@@ -48,7 +48,7 @@ list_menu:list[list[str]] = [list_main_menu, list_sub_menu, list_as_menu]
 
 
 with dpg.font_registry() as main_font_reg:
-    with dpg.font("NotoSerifCJKjp-Medium.otf", 40, default_font=True, tag='Main_font'):
+    with dpg.font("NotoSerifCJKjp-Medium.otf", 50, default_font=True, tag='Main_font'):
         dpg.add_font_range_hint(dpg.mvFontRangeHint_Cyrillic)
 dpg.bind_font('Main_font')
 
@@ -82,7 +82,7 @@ def draw_tmb(name: str, tmb_state: int | str =tmb) -> None:
 
 def draw_text_width(string: str) -> tuple[float, int]:
     str_list = string.split('\n')
-    coord_text_edit_tuple = (len(str_list[0]) / 2 * 32, 0)
+    coord_text_edit_tuple = (len(max(i for i in str_list)) / 2 * 32, 0)
     text_coords_edit = (
         text_coords[0] - coord_text_edit_tuple[0], text_coords[1])
     return text_coords_edit
@@ -91,9 +91,9 @@ def draw_text_width(string: str) -> tuple[float, int]:
 
 
 def draw_text(text=""):
-    dpg.delete_item('text')
-    dpg.draw_text(draw_text_width(text), text=text, size=60, color=(
-        0, 255, 255), parent='sprites_drawlist', tag='text')
+    # dpg.draw_text(draw_text_width(text), text=text, size=60, color=(
+    #     0, 255, 255), parent='sprites_drawlist', tag='text')
+    dpg.set_item_label(item= 'text_b', label= text)
 
 # Позиция другая, поэтому отрисовываем тумблер котроля отдельной функциекй
 
@@ -140,7 +140,7 @@ def up_arrow():
         counter += 1
         if counter >= len(list_menu[dpg.get_value('in_pr')]):
             counter = 0
-        print(counter)
+        # print(counter)
         draw_text(list_menu[dpg.get_value('in_pr')][counter])
 
 
@@ -152,7 +152,7 @@ def dwn_arrow():
         else:
             counter = counter - 1
         draw_text(list_menu[dpg.get_value('in_pr')][counter])
-        print(counter)
+        # print(counter)
 
 def in_():
     global counter_main, counter_sub, counter_as, counter
@@ -264,12 +264,14 @@ with dpg.value_registry():
     dpg.add_int_value(default_value=0, tag="in_pr")
     dpg.add_string_value(default_value="КОДЕР\nГОТОВ", tag='main_string')
 
-with dpg.viewport_drawlist(front=True, tag='main_img'):
+# with dpg.viewport_drawlist(front=False, tag='main_img'):
+#     dpg.draw_image(main, (0, 0), (w, h), uv_min=(
+#         0, 0), uv_max=(1, 1), tag='show_img')
+
+
+with dpg.viewport_drawlist(front=False, tag='sprites_drawlist'):
     dpg.draw_image(main, (0, 0), (w, h), uv_min=(
         0, 0), uv_max=(1, 1), tag='show_img')
-
-
-with dpg.viewport_drawlist(front=True, tag='sprites_drawlist'):
     draw_tmb('pit_tmb')
     draw_tmb('sam1_tmb')
     draw_tmb('sil1_tmb')
@@ -280,10 +282,7 @@ with dpg.viewport_drawlist(front=True, tag='sprites_drawlist'):
 
     dpg.draw_image(led, (250, 380), (w_l+250, h_l+380),
                    uv_min=(0, 0), uv_max=(1, 1), tag='led_img')
-
-    draw_text()
-
-with dpg.window(width=w, height=h, no_background=True, pos=[0, 0], no_move=True, no_resize=True, max_size=(w, h), min_size=(w,  h)):
+with dpg.window(width=w, height=h, no_background=True, pos=[0, 0], no_move=True, no_resize=True, max_size=(w, h), min_size=(w,  h), no_title_bar= True, no_bring_to_front_on_focus=True):
     dpg.add_button(callback=pit_tmb, width=100, height=100,
                    pos=tuple(coord_tmb_lst['pit_tmb']))
     dpg.add_button(callback=sam1_tmb, width=100, height=100,
@@ -300,7 +299,22 @@ with dpg.window(width=w, height=h, no_background=True, pos=[0, 0], no_move=True,
     dpg.add_button(callback=up_arrow, width=90, height=90, pos=[300, 670])
     dpg.add_button(callback= out_, width=90, height=90, pos=[140, 670])
     dpg.add_button(callback= in_, width=90, height=90, pos=[630, 670])
+    with dpg.window(tag='text_w', no_background= True, no_close=True, no_collapse= True, no_move= True, no_resize= True, no_title_bar= True, min_size= (200, 200), pos= (w/2 - 160, 120)):  
+        dpg.add_button(label= 'text', tag = 'text_b', width= 300)
+    draw_text()
 
+with dpg.theme() as global_theme:
+    with dpg.theme_component(dpg.mvButton):
+        dpg.add_theme_color(dpg.mvThemeCol_Button, (0, 0, 0, 0), category=dpg.mvThemeCat_Core)
+        dpg.add_theme_color(dpg.mvThemeCol_ButtonActive, (0, 0, 0, 0), category= dpg.mvThemeCat_Core)
+        dpg.add_theme_color(dpg.mvThemeCol_ButtonHovered, (0, 0, 0, 0), category= dpg.mvThemeCat_Core)
+    
+with dpg.theme() as btn_theme:
+    with dpg.theme_component(dpg.mvButton):
+        dpg.add_theme_style(dpg.mvStyleVar_ButtonTextAlign, 0.5, category= dpg.mvThemeCat_Core)
+        dpg.add_theme_color(dpg.mvThemeCol_Text, (0, 255, 255, 255))
+dpg.bind_theme(global_theme)
+dpg.bind_item_theme('text_b', btn_theme)
 dpg.setup_dearpygui()
 dpg.show_viewport()
 dpg.start_dearpygui()
