@@ -1,11 +1,12 @@
 import dearpygui.dearpygui as dpg
 import time
 import numpy as np
+import sys
 w, h, ch, data = dpg.load_image('./img/1_main.jpg')
 
 
 dpg.create_context()
-dpg.create_viewport(title="Diplom", width=w, height=h + 50, max_width=w, max_height=h+50, resizable=False)
+dpg.create_viewport(title="Diplom", width=w, height=h + 150, max_width=w, max_height=h+250, resizable=False)
 
 
 with dpg.texture_registry(show=False):
@@ -28,16 +29,14 @@ with dpg.texture_registry(show=False):
     w_l, h_l, ch, data_l_on = dpg.load_image('./img/sprites_led_on.jpg')
     led_on = dpg.add_static_texture(
         width=w_l, height=h_l, default_value=data_l_on, tag='led_on')
+    w_logo, h_logo, ch, data_logo = dpg.load_image('./img/logo.png') 
+    logo = dpg.add_static_texture(width= w_logo, height= h_logo, default_value= data_logo, tag = 'logo')
 
-    w_d, h_d, ch, data_d = dpg.load_image('./img/display.jpg')
-    display = dpg.add_static_texture(
-        width=w_d, height=h_d, default_value=data_d, tag='display')
+list_main_menu:list[str] = ["ПАРАМЕТРЫ\nАC",
+            "КОНТРОЛЬ\nПИТАНИЯ", "РК\n", "ДПК\n"]
 
-list_main_menu:list[str] = ["ПАРАМЕТРЫ\n          АC",
-            "КОНТРОЛЬ\n ПИТАНИЯ", "РК\n", "ДПК\n"]
-
-list_sub_menu:list[str] = [" AC\n1-24", "  AC\n25-48", "AC\n49", "AC\n50", 
-                           "  AC\n55-70", "Трез", "ТМП", "СКТ", 
+list_sub_menu:list[str] = ["AC\n1-24", "AC\n25-48", "AC\n49", "AC\n50", 
+                           "AC\n55-70", "Трез", "ТМП", "СКТ", 
                            "СЛС", "115 В", "27 В", "ПЧК", "РК"]
 
 list_as_menu:list[str] = [f"АС{i}" for i in range(25, 49)]
@@ -47,13 +46,16 @@ list_menu:list[list[str]] = [list_main_menu, list_sub_menu, list_as_menu]
 
 
 with dpg.font_registry() as main_font_reg:
-    with dpg.font("NotoSerifCJKjp-Medium.otf", 50, default_font=True, tag='Main_font'):
+    with dpg.font("./Cousine-Regular.ttf", 50, default_font=True, tag='Main_font'):
         dpg.add_font_range_hint(dpg.mvFontRangeHint_Cyrillic)
-dpg.bind_font('Main_font')
+    with dpg.font('./Cousine-Bold.ttf', 50, tag = 'cab_font'):
+        dpg.add_font_range_hint(dpg.mvFontRangeHint_Cyrillic)
+    with dpg.font('./Cousine-Regular.ttf', 20, tag = 'cab_tmb_f'):
+        dpg.add_font_range_hint(dpg.mvFontRangeHint_Cyrillic)
 
 # Координаты для тумблеров включения и текста
 
-tmbs_start_coord = (175, 850)
+tmbs_start_coord = (175, 990)
 text_coords = (430, 120)
 
 # Магия чисел с координатами следующих тумблеров (К начальной координате добовляем координату одного тумблера)
@@ -109,6 +111,12 @@ def check_tmb():
         dpg.draw_image(led, (250, 380), (w_l+250, h_l+380), uv_min=(0, 0),
                        uv_max=(1, 1), parent='sprites_drawlist', tag='led_img')
         dpg.set_value('pui_status', value=False)
+        global counter_main, counter_sub, counter_as, counter
+        dpg.set_value('in_pr', 0)
+        counter = 0 
+        counter_main = 0
+        counter_sub = 0
+        counter_as = 0
         draw_text()
 
 # Далее работа со стрелами, тоже самый банальный вариант, берем просто счетчик и сбарасываем его каждый раз как дошли до конца списка
@@ -142,10 +150,9 @@ def dwn_arrow():
 def in_():
     global counter_main, counter_sub, counter_as, counter
     current_text:str = list_menu[dpg.get_value('in_pr')][counter]
-    print(current_text)
     if dpg.get_value('in_pr')  == 2:
         return
-    if dpg.get_value('pui_status') and ( current_text == "ПАРАМЕТРЫ\n          АC" or current_text == "  AC\n25-48"):
+    if dpg.get_value('pui_status') and ( current_text == "ПАРАМЕТРЫ\nАC" or current_text == "AC\n25-48"):
         dpg.set_value('in_pr', dpg.get_value('in_pr') + 1)
         draw_text(list_menu[dpg.get_value('in_pr')][0])
         counter = 0
@@ -250,6 +257,7 @@ with dpg.value_registry():
     dpg.add_string_value(default_value="КОДЕР\nГОТОВ", tag='main_string')
 
 
+list_of_cab_tmb:list[str] = ['ПИТ', 'САМ1', 'СИЛ1', 'САМ2', 'СИЛ2']
 with dpg.viewport_drawlist(front=False, tag='sprites_drawlist'):
     dpg.draw_image(main, (0, 0), (w, h), uv_min=(
         0, 0), uv_max=(1, 1), tag='show_img')
@@ -263,39 +271,69 @@ with dpg.viewport_drawlist(front=False, tag='sprites_drawlist'):
 
     dpg.draw_image(led, (250, 380), (w_l+250, h_l+380),
                    uv_min=(0, 0), uv_max=(1, 1), tag='led_img')
-with dpg.window(width=w, height=h, no_background=True, pos=[0, 0], no_move=True, no_resize=True, max_size=(w, h), min_size=(w,  h), no_title_bar= True, no_bring_to_front_on_focus=True):
-    dpg.add_button(callback=pit_tmb, width=100, height=100,
-                   pos=tuple(coord_tmb_lst['pit_tmb']))
-    dpg.add_button(callback=sam1_tmb, width=100, height=100,
-                   pos=tuple(coord_tmb_lst['sam1_tmb']))
-    dpg.add_button(callback=sail_tmb, width=100, height=100,
-                   pos=tuple(coord_tmb_lst['sil1_tmb']))
-    dpg.add_button(callback=sam2_tmb, width=100, height=100,
-                   pos=tuple(coord_tmb_lst['sam2_tmb']))
-    dpg.add_button(callback=sil2_tmb, width=100, height=100,
-                   pos=tuple(coord_tmb_lst['sil2_tmb']))
-    dpg.add_button(width=90, height=90, pos=[85, 530])
-    dpg.add_button(callback=contr_tmp, width=90, height=90, pos=[680, 540])
-    dpg.add_button(callback=dwn_arrow, width=90, height=90, pos=[460, 670])
-    dpg.add_button(callback=up_arrow, width=90, height=90, pos=[300, 670])
-    dpg.add_button(callback= out_, width=90, height=90, pos=[140, 670])
-    dpg.add_button(callback= in_, width=90, height=90, pos=[630, 670])
-    with dpg.window(tag='text_w', no_background= True, no_close=True, no_collapse= True, no_move= True, no_resize= True, no_title_bar= True, min_size= (200, 200), pos= (w/2 - 160, 120)):  
-        dpg.add_button(label= 'text', tag = 'text_b', width= 300)
-    draw_text()
+    dpg.draw_text(pos=(330, 905), text = 'КАБИНА', size= 60, color=(0, 0, 0, 255), tag = 'cab')
+    i:int  = 0
+    for tmb_b in list_of_cab_tmb:
+        dpg.draw_text(pos =(list(coord_tmb_lst.values())[i][0] + 20, list(coord_tmb_lst.values())[i][1] - 27) , text = tmb_b, size = 30, tag = f'tmb{i}')
+        i+= 1
 
-with dpg.theme() as global_theme:
-    with dpg.theme_component(dpg.mvButton):
-        dpg.add_theme_color(dpg.mvThemeCol_Button, (0, 0, 0, 0), category=dpg.mvThemeCat_Core)
-        dpg.add_theme_color(dpg.mvThemeCol_ButtonActive, (0, 0, 0, 0), category= dpg.mvThemeCat_Core)
-        dpg.add_theme_color(dpg.mvThemeCol_ButtonHovered, (0, 0, 0, 0), category= dpg.mvThemeCat_Core)
-    
-with dpg.theme() as btn_theme:
-    with dpg.theme_component(dpg.mvButton):
-        dpg.add_theme_style(dpg.mvStyleVar_ButtonTextAlign, 0.5, category= dpg.mvThemeCat_Core)
-        dpg.add_theme_color(dpg.mvThemeCol_Text, (0, 255, 255, 255))
-dpg.bind_theme(global_theme)
-dpg.bind_item_theme('text_b', btn_theme)
+def exit_cal() -> None:
+    dpg.stop_dearpygui()
+
+
+
+def study_cal() -> None:
+    dpg.delete_item('lable_w')
+    dpg.delete_item('lable_logo')
+    with dpg.window(width=w, height=h, no_background=True, pos=[0, 0], no_move=True, no_resize=True, max_size=(w, h + 150), min_size=(w,  h+150), no_title_bar= True, no_bring_to_front_on_focus=True):
+        with dpg.menu_bar():
+            dpg.add_button(label="Выбор режима", callback= lable_w)
+            dpg.add_button(label="Выход", callback= exit_cal)
+        dpg.add_button(callback=pit_tmb, width=100, height=100,
+                    pos=tuple(coord_tmb_lst['pit_tmb']))
+        dpg.add_button(callback=sam1_tmb, width=100, height=100,
+                    pos=tuple(coord_tmb_lst['sam1_tmb']))
+        dpg.add_button(callback=sail_tmb, width=100, height=100,
+                    pos=tuple(coord_tmb_lst['sil1_tmb']))
+        dpg.add_button(callback=sam2_tmb, width=100, height=100,
+                    pos=tuple(coord_tmb_lst['sam2_tmb']))
+        dpg.add_button(callback=sil2_tmb, width=100, height=100,
+                    pos=tuple(coord_tmb_lst['sil2_tmb']))
+        dpg.add_button(width=90, height=90, pos=[85, 530])
+        dpg.add_button(callback=contr_tmp, width=90, height=90, pos=[680, 540])
+        dpg.add_button(callback=dwn_arrow, width=90, height=90, pos=[460, 670])
+        dpg.add_button(callback=up_arrow, width=90, height=90, pos=[300, 670])
+        dpg.add_button(callback= out_, width=90, height=90, pos=[140, 670])
+        dpg.add_button(callback= in_, width=90, height=90, pos=[630, 670])
+        with dpg.window(tag='text_w', no_background= True, no_close=True, no_collapse= True, no_move= True, no_resize= True, no_title_bar= True, min_size= (200, 200), pos= (w/2 - 160, 120)):  
+            dpg.add_button(label= 'text', tag = 'text_b', width= 300)
+        draw_text()
+    with dpg.theme() as btn_theme:
+        with dpg.theme_component(dpg.mvButton):
+            dpg.add_theme_color(dpg.mvThemeCol_Button, (0, 0, 0, 0), category=dpg.mvThemeCat_Core)
+            dpg.add_theme_color(dpg.mvThemeCol_ButtonActive, (0, 0, 0, 0), category= dpg.mvThemeCat_Core)
+            dpg.add_theme_color(dpg.mvThemeCol_ButtonHovered, (0, 0, 0, 0), category= dpg.mvThemeCat_Core)
+            dpg.add_theme_style(dpg.mvStyleVar_ButtonTextAlign, 0.5, category= dpg.mvThemeCat_Core)
+            dpg.add_theme_color(dpg.mvThemeCol_Text, (0, 255, 255, 255))
+    dpg.bind_item_font('cab', 'cab_font')
+    for i in range(len(list_of_cab_tmb)):
+        dpg.bind_item_font(f'tmb{i}', 'cab_tmb_f')
+    dpg.bind_theme(btn_theme)
+
+def lable_w() -> None:
+    with dpg.window(width= w, height=h+250, pos = (0, 0), no_title_bar= True, tag = 'lable_w'):
+        dpg.add_text(pos = (w - 700, 0), default_value="Компьютерный тренажер \n   системы 'Кодер'", tag = 'lable_text')
+        with dpg.viewport_drawlist(front= True, tag = 'lable_logo'):
+            dpg.draw_image(logo, (150,150), (w_logo - 500,h_logo - 400), uv_min=(0,0), uv_max= (1,1), tag = 'logo_img')
+        dpg.add_button(label= "Обучение", pos = (320, 600), callback= study_cal)
+        dpg.add_button(label= "Контроль", pos = (320, 800))
+        dpg.add_button(label= "Выход", pos = (355, 1000), callback = exit_cal)
+
+
+lable_w()
+dpg.bind_font('Main_font')
+
+
 dpg.setup_dearpygui()
 dpg.show_viewport()
 dpg.start_dearpygui()
