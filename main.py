@@ -41,7 +41,6 @@ list_sub_menu:list[str] = ["AC\n1-24", "AC\n25-48", "AC\n49", "AC\n50",
 
 list_as_menu:list[str] = [f"АС{i}" for i in range(25, 49)]
 
-
 list_menu:list[list[str]] = [list_main_menu, list_sub_menu, list_as_menu]
 
 
@@ -51,6 +50,8 @@ with dpg.font_registry() as main_font_reg:
     with dpg.font('./Cousine-Bold.ttf', 50, tag = 'cab_font'):
         dpg.add_font_range_hint(dpg.mvFontRangeHint_Cyrillic)
     with dpg.font('./Cousine-Regular.ttf', 20, tag = 'cab_tmb_f'):
+        dpg.add_font_range_hint(dpg.mvFontRangeHint_Cyrillic)
+    with dpg.font('./Cousine-Regular.ttf', 30, tag = 'menu_f'):
         dpg.add_font_range_hint(dpg.mvFontRangeHint_Cyrillic)
 
 # Координаты для тумблеров включения и текста
@@ -80,7 +81,12 @@ def draw_tmb(name: str, tmb_state: int | str =tmb) -> None:
 
 # Отрисовка текста
 def draw_text(text=""):
-    dpg.set_item_label(item= 'text_b', label= text)
+    if len(text.split('\n')) == 2:
+        dpg.set_item_label(item= 'text_b', label= text.split('\n')[0])
+        dpg.set_item_label(item= 'text_b_1', label= text.split('\n')[1])
+    else:
+        dpg.set_item_label(item= 'text_b', label= text)
+        dpg.set_item_label(item= 'text_b_1', label='')
 
 # Позиция другая, поэтому отрисовываем тумблер котроля отдельной функциекй
 
@@ -258,37 +264,64 @@ with dpg.value_registry():
 
 
 list_of_cab_tmb:list[str] = ['ПИТ', 'САМ1', 'СИЛ1', 'САМ2', 'СИЛ2']
-with dpg.viewport_drawlist(front=False, tag='sprites_drawlist'):
-    dpg.draw_image(main, (0, 0), (w, h), uv_min=(
-        0, 0), uv_max=(1, 1), tag='show_img')
-    draw_tmb('pit_tmb')
-    draw_tmb('sam1_tmb')
-    draw_tmb('sil1_tmb')
-    draw_tmb('sam2_tmb')
-    draw_tmb('sil2_tmb')
-    dpg.draw_image(tmb, (680, 540), (w_t+680, h_t+540),
-                   uv_min=(0, 0), uv_max=(1, 1), tag='contrl_tmb')
 
-    dpg.draw_image(led, (250, 380), (w_l+250, h_l+380),
-                   uv_min=(0, 0), uv_max=(1, 1), tag='led_img')
-    dpg.draw_text(pos=(330, 905), text = 'КАБИНА', size= 60, color=(0, 0, 0, 255), tag = 'cab')
-    i:int  = 0
-    for tmb_b in list_of_cab_tmb:
-        dpg.draw_text(pos =(list(coord_tmb_lst.values())[i][0] + 20, list(coord_tmb_lst.values())[i][1] - 27) , text = tmb_b, size = 30, tag = f'tmb{i}')
-        i+= 1
 
 def exit_cal() -> None:
     dpg.stop_dearpygui()
+
+
+with dpg.theme() as btn_theme:
+        with dpg.theme_component(dpg.mvButton):
+            dpg.add_theme_color(dpg.mvThemeCol_Button, (0, 0, 0, 0), category=dpg.mvThemeCat_Core)
+            dpg.add_theme_color(dpg.mvThemeCol_ButtonActive, (0, 0, 0, 0), category= dpg.mvThemeCat_Core)
+            dpg.add_theme_color(dpg.mvThemeCol_ButtonHovered, (0, 0, 0, 0), category= dpg.mvThemeCat_Core)
+            dpg.add_theme_style(dpg.mvStyleVar_ButtonTextAlign, 0.5, category= dpg.mvThemeCat_Core)
+            dpg.add_theme_color(dpg.mvThemeCol_Text, (0, 255, 255, 255))
+with dpg.theme() as menu_theme:
+    with dpg.theme_component(dpg.mvButton):
+        dpg.add_theme_color(dpg.mvThemeCol_Text, (255,255,255,255))
+        dpg.add_theme_color(dpg.mvThemeCol_ButtonActive, (0, 255, 255, 255), category= dpg.mvThemeCat_Core)
+        dpg.add_theme_color(dpg.mvThemeCol_ButtonHovered, (0, 125, 125, 255), category= dpg.mvThemeCat_Core)
+        # dpg.add_theme_style(dpg.mvStyleVar_ButtonTextAlign, 0.5, category= dpg.mvThemeCat_Core)
+        # dpg.add_theme_color(dpg.mvThemeCol_Text, (0, 255, 255, 255))
 
 
 
 def study_cal() -> None:
     dpg.delete_item('lable_w')
     dpg.delete_item('lable_logo')
-    with dpg.window(width=w, height=h, no_background=True, pos=[0, 0], no_move=True, no_resize=True, max_size=(w, h + 150), min_size=(w,  h+150), no_title_bar= True, no_bring_to_front_on_focus=True):
+    dpg.delete_item('sprites_drawlist')
+    dpg.set_value('pui_status', False)
+    dpg.set_value('bool_contrl', False)
+    dpg.set_value('bool_pit', False)
+    dpg.set_value('bool_sam1', False)
+    dpg.set_value('bool_sam2', False)
+    dpg.set_value('bool_sil2', False)
+    with dpg.viewport_drawlist(front=False, tag='sprites_drawlist'):
+        dpg.draw_image(main, (0, 0), (w, h), uv_min=(
+            0, 0), uv_max=(1, 1), tag='show_img')
+        draw_tmb('pit_tmb')
+        draw_tmb('sam1_tmb')
+        draw_tmb('sil1_tmb')
+        draw_tmb('sam2_tmb')
+        draw_tmb('sil2_tmb')
+        dpg.draw_image(tmb, (680, 540), (w_t+680, h_t+540),
+                    uv_min=(0, 0), uv_max=(1, 1), tag='contrl_tmb')
+
+        dpg.draw_image(led, (250, 380), (w_l+250, h_l+380),
+                    uv_min=(0, 0), uv_max=(1, 1), tag='led_img')
+        dpg.draw_text(pos=(330, 905), text = 'КАБИНА', size= 60, color=(0, 0, 0, 255), tag = 'cab')
+        i:int  = 0
+        for tmb_b in list_of_cab_tmb:
+            dpg.draw_text(pos =(list(coord_tmb_lst.values())[i][0] + 20, list(coord_tmb_lst.values())[i][1] - 27) , text = tmb_b, size = 30, tag = f'tmb{i}')
+            i+= 1
+    
+    if dpg.does_item_exist('st_w'):
+        dpg.delete_item('st_w')
+    with dpg.window(width=w, height=h, no_background=True, pos=[0, 0], no_move=True, no_resize=True, max_size=(w, h + 150), min_size=(w,  h+150), no_title_bar= True, no_bring_to_front_on_focus=True, tag ='st_w'):
         with dpg.menu_bar():
-            dpg.add_button(label="Выбор режима", callback= lable_w)
-            dpg.add_button(label="Выход", callback= exit_cal)
+            dpg.add_button(label="Выбор режима", callback= lable_w, tag = 'cho_mode')
+            dpg.add_button(label="Выход", callback= exit_cal, tag = 'exit_b')
         dpg.add_button(callback=pit_tmb, width=100, height=100,
                     pos=tuple(coord_tmb_lst['pit_tmb']))
         dpg.add_button(callback=sam1_tmb, width=100, height=100,
@@ -307,28 +340,35 @@ def study_cal() -> None:
         dpg.add_button(callback= in_, width=90, height=90, pos=[630, 670])
         with dpg.window(tag='text_w', no_background= True, no_close=True, no_collapse= True, no_move= True, no_resize= True, no_title_bar= True, min_size= (200, 200), pos= (w/2 - 160, 120)):  
             dpg.add_button(label= 'text', tag = 'text_b', width= 300)
+            dpg.add_button(label= '', tag= 'text_b_1', width= 300)
         draw_text()
-    with dpg.theme() as btn_theme:
-        with dpg.theme_component(dpg.mvButton):
-            dpg.add_theme_color(dpg.mvThemeCol_Button, (0, 0, 0, 0), category=dpg.mvThemeCat_Core)
-            dpg.add_theme_color(dpg.mvThemeCol_ButtonActive, (0, 0, 0, 0), category= dpg.mvThemeCat_Core)
-            dpg.add_theme_color(dpg.mvThemeCol_ButtonHovered, (0, 0, 0, 0), category= dpg.mvThemeCat_Core)
-            dpg.add_theme_style(dpg.mvStyleVar_ButtonTextAlign, 0.5, category= dpg.mvThemeCat_Core)
-            dpg.add_theme_color(dpg.mvThemeCol_Text, (0, 255, 255, 255))
+    
+    dpg.bind_item_font('cho_mode', 'menu_f')
+    dpg.bind_item_font('exit_b', 'menu_f')
     dpg.bind_item_font('cab', 'cab_font')
     for i in range(len(list_of_cab_tmb)):
         dpg.bind_item_font(f'tmb{i}', 'cab_tmb_f')
     dpg.bind_theme(btn_theme)
+    dpg.bind_item_theme('cho_mode', menu_theme)
+    dpg.bind_item_theme('exit_b', menu_theme)
+
 
 def lable_w() -> None:
+    if dpg.does_item_exist('text_w'):
+        dpg.delete_item('text_w')
     with dpg.window(width= w, height=h+250, pos = (0, 0), no_title_bar= True, tag = 'lable_w'):
         dpg.add_text(pos = (w - 700, 0), default_value="Компьютерный тренажер \n   системы 'Кодер'", tag = 'lable_text')
         with dpg.viewport_drawlist(front= True, tag = 'lable_logo'):
             dpg.draw_image(logo, (150,150), (w_logo - 500,h_logo - 400), uv_min=(0,0), uv_max= (1,1), tag = 'logo_img')
-        dpg.add_button(label= "Обучение", pos = (320, 600), callback= study_cal)
-        dpg.add_button(label= "Контроль", pos = (320, 800))
-        dpg.add_button(label= "Выход", pos = (355, 1000), callback = exit_cal)
-
+        dpg.add_button(label= "Обучение", pos = (320, 600), callback= study_cal, tag = 'st_mode_act')
+        dpg.add_button(label= "Контроль", pos = (320, 800), tag = 'contrl_mode_act')
+        dpg.add_button(label= "Выход", pos = (355, 1000), callback = exit_cal, tag = 'exit_act')
+    dpg.bind_item_font('st_mode_act', 'cab_font')
+    dpg.bind_item_font('contrl_mode_act', 'cab_font')
+    dpg.bind_item_font('exit_act', 'cab_font')
+    dpg.bind_item_theme('st_mode_act', menu_theme)    
+    dpg.bind_item_theme('contrl_mode_act', menu_theme)
+    dpg.bind_item_theme('exit_act', menu_theme)
 
 lable_w()
 dpg.bind_font('Main_font')
