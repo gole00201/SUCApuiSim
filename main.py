@@ -45,13 +45,13 @@ list_menu:list[list[str]] = [list_main_menu, list_sub_menu, list_as_menu]
 
 
 with dpg.font_registry() as main_font_reg:
-    with dpg.font("./Cousine-Regular.ttf", 50, default_font=True, tag='Main_font'):
+    with dpg.font("./fonts/Cousine-Regular.ttf", 50, default_font=True, tag='Main_font'):
         dpg.add_font_range_hint(dpg.mvFontRangeHint_Cyrillic)
-    with dpg.font('./Cousine-Bold.ttf', 50, tag = 'cab_font'):
+    with dpg.font('./fonts/Cousine-Bold.ttf', 50, tag = 'cab_font'):
         dpg.add_font_range_hint(dpg.mvFontRangeHint_Cyrillic)
-    with dpg.font('./Cousine-Regular.ttf', 20, tag = 'cab_tmb_f'):
+    with dpg.font('./fonts/Cousine-Regular.ttf', 20, tag = 'cab_tmb_f'):
         dpg.add_font_range_hint(dpg.mvFontRangeHint_Cyrillic)
-    with dpg.font('./Cousine-Regular.ttf', 30, tag = 'menu_f'):
+    with dpg.font('./fonts/Cousine-Regular.ttf', 30, tag = 'menu_f'):
         dpg.add_font_range_hint(dpg.mvFontRangeHint_Cyrillic)
 
 # Координаты для тумблеров включения и текста
@@ -171,17 +171,17 @@ def show_alt_data() -> None:
 def show_speed_data() -> None:
     if dpg.get_value('pui_status') and counter == 23:
         if dpg.get_value('list_sp') == '400':
-            draw_text('АС45      40\n4.565В      ')
+            draw_text('АС48      40\n4.565В      ')
         if dpg.get_value('list_sp') == '350':
-            draw_text('АС45      5A\n4.575В      ')
+            draw_text('АС48      5A\n4.575В      ')
         if dpg.get_value('list_sp') == '300':
-            draw_text('АС45      74\n4.515В      ')
+            draw_text('АС48      74\n4.515В      ')
         if dpg.get_value('list_sp') == '250':
-            draw_text('АС45      8D\n4.525В      ')
+            draw_text('АС48      8D\n4.525В      ')
         if dpg.get_value('list_sp') == '200':
-            draw_text('АС45      A8\n4.595В      ')
+            draw_text('АС48      A8\n4.595В      ')
         if dpg.get_value('list_sp') == '150':
-            draw_text('АС45      C2\n4.505В      ')
+            draw_text('АС48      C2\n4.505В      ')
 
 def in_():
     global counter_main, counter_sub, counter_as, counter
