@@ -169,7 +169,6 @@ def show_alt_data() -> None:
             draw_text('АС45      E2\n4.505В      ')
         
 def show_speed_data() -> None:
-    print(counter)
     if dpg.get_value('pui_status') and counter == 23:
         if dpg.get_value('list_sp') == '400':
             draw_text('АС45      40\n4.565В      ')
