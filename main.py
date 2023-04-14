@@ -6,7 +6,7 @@ w, h, ch, data = dpg.load_image('./img/1_main.jpg')
 
 
 dpg.create_context()
-dpg.create_viewport(title="Diplom", width=w, height=h + 150, max_width=w, max_height=h+250, resizable=False)
+dpg.create_viewport(title="Diplom", width=w+600, height=h, max_width=w+ 600, max_height=h, resizable=False)
 
 
 with dpg.texture_registry(show=False):
@@ -56,7 +56,7 @@ with dpg.font_registry() as main_font_reg:
 
 # Координаты для тумблеров включения и текста
 
-tmbs_start_coord = (175, 990)
+tmbs_start_coord = (900, 180)
 text_coords = (430, 120)
 
 # Магия чисел с координатами следующих тумблеров (К начальной координате добовляем координату одного тумблера)
@@ -276,7 +276,9 @@ with dpg.theme() as btn_theme:
             dpg.add_theme_color(dpg.mvThemeCol_ButtonActive, (0, 0, 0, 0), category= dpg.mvThemeCat_Core)
             dpg.add_theme_color(dpg.mvThemeCol_ButtonHovered, (0, 0, 0, 0), category= dpg.mvThemeCat_Core)
             dpg.add_theme_style(dpg.mvStyleVar_ButtonTextAlign, 0.5, category= dpg.mvThemeCat_Core)
-            dpg.add_theme_color(dpg.mvThemeCol_Text, (0, 255, 255, 255))
+            dpg.add_theme_color(dpg.mvThemeCol_Text, (255, 255, 255, 255))
+        with dpg.theme_component(dpg.mvListbox):
+            dpg.add_theme_color(dpg.mvThemeCol_Button, (0,0,0,0), category= dpg.mvThemeCat_Core)
 with dpg.theme() as menu_theme:
     with dpg.theme_component(dpg.mvButton):
         dpg.add_theme_color(dpg.mvThemeCol_Text, (255,255,255,255))
@@ -286,7 +288,8 @@ with dpg.theme() as menu_theme:
         # dpg.add_theme_color(dpg.mvThemeCol_Text, (0, 255, 255, 255))
 
 
-
+speed_list:list[str] = ['400', '350', '300', '250', '200']
+alt_list:list[str] = ['5000', '4000', '3000', '2000', '1000', '50']
 def study_cal() -> None:
     dpg.delete_item('lable_w')
     dpg.delete_item('lable_logo')
@@ -310,15 +313,15 @@ def study_cal() -> None:
 
         dpg.draw_image(led, (250, 380), (w_l+250, h_l+380),
                     uv_min=(0, 0), uv_max=(1, 1), tag='led_img')
-        dpg.draw_text(pos=(330, 905), text = 'КАБИНА', size= 60, color=(0, 0, 0, 255), tag = 'cab')
+        dpg.draw_text(pos=(1060, 80), text = 'КАБИНА', size= 60, color=(255, 255, 255, 255), tag = 'cab')
+        dpg.draw_text(pos=(1060, 300), text= '   ВВОД\nПАРАМЕТРОВ', size = 40, tag = 'cab_par')
         i:int  = 0
         for tmb_b in list_of_cab_tmb:
             dpg.draw_text(pos =(list(coord_tmb_lst.values())[i][0] + 20, list(coord_tmb_lst.values())[i][1] - 27) , text = tmb_b, size = 30, tag = f'tmb{i}')
             i+= 1
-    
     if dpg.does_item_exist('st_w'):
         dpg.delete_item('st_w')
-    with dpg.window(width=w, height=h, no_background=True, pos=[0, 0], no_move=True, no_resize=True, max_size=(w, h + 150), min_size=(w,  h+150), no_title_bar= True, no_bring_to_front_on_focus=True, tag ='st_w'):
+    with dpg.window(width=w + 600, height=h, no_background=True, pos=[0, 0], no_move=True, no_resize=True, no_title_bar= True, no_bring_to_front_on_focus=True, tag ='st_w'):
         with dpg.menu_bar():
             dpg.add_button(label="Выбор режима", callback= lable_w, tag = 'cho_mode')
             dpg.add_button(label="Выход", callback= exit_cal, tag = 'exit_b')
@@ -342,13 +345,27 @@ def study_cal() -> None:
             dpg.add_button(label= 'text', tag = 'text_b', width= 300)
             dpg.add_button(label= '', tag= 'text_b_1', width= 300)
         draw_text()
+        with dpg.window(no_resize= True, no_background= True, no_close=True, no_title_bar= True, no_collapse= True, pos = (850, 400), autosize= True):
+            with dpg.group(horizontal= True, horizontal_spacing= 40):
+                dpg.add_text(default_value='Введите значение высоты', tag = 'speed_t')
+                dpg.add_listbox(items= alt_list, tag = 'list_alt', width= 150)
+            with dpg.group(horizontal= True):
+                dpg.add_text(default_value='Введите значение скорости', tag = 'alt_t')            
+                dpg.add_listbox(items= speed_list, tag = 'list_sp', width= 150)
+    dpg.bind_item_font('list_sp', 'menu_f')
+    dpg.bind_item_font('list_alt', 'menu_f')
     
+    dpg.bind_item_font('cab_par', 'cab_font')
+    dpg.bind_item_font('alt_t', 'menu_f')
+    dpg.bind_item_font('speed_t', 'menu_f')    
     dpg.bind_item_font('cho_mode', 'menu_f')
     dpg.bind_item_font('exit_b', 'menu_f')
     dpg.bind_item_font('cab', 'cab_font')
     for i in range(len(list_of_cab_tmb)):
         dpg.bind_item_font(f'tmb{i}', 'cab_tmb_f')
     dpg.bind_theme(btn_theme)
+    # dpg.bind_item_theme('list_sp', menu_theme)
+    # dpg.bind_item_theme('list_alt', menu_theme)
     dpg.bind_item_theme('cho_mode', menu_theme)
     dpg.bind_item_theme('exit_b', menu_theme)
 
@@ -356,13 +373,13 @@ def study_cal() -> None:
 def lable_w() -> None:
     if dpg.does_item_exist('text_w'):
         dpg.delete_item('text_w')
-    with dpg.window(width= w, height=h+250, pos = (0, 0), no_title_bar= True, tag = 'lable_w'):
-        dpg.add_text(pos = (w - 700, 0), default_value="Компьютерный тренажер \n   системы 'Кодер'", tag = 'lable_text')
+    with dpg.window(width= w+600, height=h+250, pos = (0, 0), no_title_bar= True, tag = 'lable_w'):
+        dpg.add_text(pos = (w - 400, 0), default_value="Компьютерный тренажер \n   системы 'Кодер'", tag = 'lable_text')
         with dpg.viewport_drawlist(front= True, tag = 'lable_logo'):
-            dpg.draw_image(logo, (150,150), (w_logo - 500,h_logo - 400), uv_min=(0,0), uv_max= (1,1), tag = 'logo_img')
-        dpg.add_button(label= "Обучение", pos = (320, 600), callback= study_cal, tag = 'st_mode_act')
-        dpg.add_button(label= "Контроль", pos = (320, 800), tag = 'contrl_mode_act')
-        dpg.add_button(label= "Выход", pos = (355, 1000), callback = exit_cal, tag = 'exit_act')
+            dpg.draw_image(logo, (380, 100), (w_logo - 110,h_logo - 250), uv_min=(0,0), uv_max= (1,1), tag = 'logo_img')
+        dpg.add_button(label= "Обучение", pos = (640, 600), callback= study_cal, tag = 'st_mode_act')
+        dpg.add_button(label= "Контроль", pos = (640, 700), tag = 'contrl_mode_act')
+        dpg.add_button(label= "Выход", pos = (680, 800), callback = exit_cal, tag = 'exit_act')
     dpg.bind_item_font('st_mode_act', 'cab_font')
     dpg.bind_item_font('contrl_mode_act', 'cab_font')
     dpg.bind_item_font('exit_act', 'cab_font')
