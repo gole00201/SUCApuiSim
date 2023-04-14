@@ -152,13 +152,50 @@ def dwn_arrow():
             counter = counter - 1
         draw_text(list_menu[dpg.get_value('in_pr')][counter])
         # print(counter)
+ 
+def show_alt_data() -> None:
+    if dpg.get_value('pui_status') and counter == 20:
+        if dpg.get_value('list_alt') == '5000':
+            draw_text('АС45      40\n4.565В      ')
+        if dpg.get_value('list_alt') == '4000':
+            draw_text('АС45      60\n4.575В      ')
+        if dpg.get_value('list_alt') == '3000':
+            draw_text('АС45      81\n4.515В      ')
+        if dpg.get_value('list_alt') == '2000':
+            draw_text('АС45      А2\n4.525В      ')
+        if dpg.get_value('list_alt') == '1000':
+            draw_text('АС45      С4\n4.595В      ')
+        if dpg.get_value('list_alt') == '50':
+            draw_text('АС45      E2\n4.505В      ')
+        
+def show_speed_data() -> None:
+    print(counter)
+    if dpg.get_value('pui_status') and counter == 23:
+        if dpg.get_value('list_sp') == '400':
+            draw_text('АС45      40\n4.565В      ')
+        if dpg.get_value('list_sp') == '350':
+            draw_text('АС45      5A\n4.575В      ')
+        if dpg.get_value('list_sp') == '300':
+            draw_text('АС45      74\n4.515В      ')
+        if dpg.get_value('list_sp') == '250':
+            draw_text('АС45      8D\n4.525В      ')
+        if dpg.get_value('list_sp') == '200':
+            draw_text('АС45      A8\n4.595В      ')
+        if dpg.get_value('list_sp') == '150':
+            draw_text('АС45      C2\n4.505В      ')
 
 def in_():
     global counter_main, counter_sub, counter_as, counter
     current_text:str = list_menu[dpg.get_value('in_pr')][counter]
-    if dpg.get_value('in_pr')  == 2:
+    if dpg.get_value('pui_status') and (current_text == 'АС45'):
+        show_alt_data()
         return
-    if dpg.get_value('pui_status') and ( current_text == "ПАРАМЕТРЫ\nАC" or current_text == "AC\n25-48"):
+    if dpg.get_value('pui_status') and (current_text == 'АС48'):
+        show_speed_data()
+        return
+    if dpg.get_value('in_pr')  == 3:
+        return
+    elif dpg.get_value('pui_status') and ( current_text == "ПАРАМЕТРЫ\nАC" or current_text == "AC\n25-48"):
         dpg.set_value('in_pr', dpg.get_value('in_pr') + 1)
         draw_text(list_menu[dpg.get_value('in_pr')][0])
         counter = 0
@@ -168,6 +205,9 @@ def in_():
 def out_():
     global counter_main, counter_sub, counter_as, counter
     if dpg.get_value('pui_status') and dpg.get_value('in_pr'):
+        if (counter == 20 or counter == 23) and len(dpg.get_item_label('text_b_1')) > 0:
+            draw_text(list_menu[dpg.get_value('in_pr')][counter])
+            return
         dpg.set_value('in_pr', dpg.get_value('in_pr') - 1)
         draw_text(list_menu[dpg.get_value('in_pr')][0])
         counter = 0
@@ -288,6 +328,9 @@ with dpg.theme() as menu_theme:
         # dpg.add_theme_color(dpg.mvThemeCol_Text, (0, 255, 255, 255))
 
 
+
+    
+
 speed_list:list[str] = ['400', '350', '300', '250', '200']
 alt_list:list[str] = ['5000', '4000', '3000', '2000', '1000', '50']
 def study_cal() -> None:
@@ -341,17 +384,17 @@ def study_cal() -> None:
         dpg.add_button(callback=up_arrow, width=90, height=90, pos=[300, 670])
         dpg.add_button(callback= out_, width=90, height=90, pos=[140, 670])
         dpg.add_button(callback= in_, width=90, height=90, pos=[630, 670])
-        with dpg.window(tag='text_w', no_background= True, no_close=True, no_collapse= True, no_move= True, no_resize= True, no_title_bar= True, min_size= (200, 200), pos= (w/2 - 160, 120)):  
-            dpg.add_button(label= 'text', tag = 'text_b', width= 300)
-            dpg.add_button(label= '', tag= 'text_b_1', width= 300)
+        with dpg.window(tag='text_w', no_background= True, no_close=True, no_collapse= True, no_move= True, no_resize= True, no_title_bar= True, min_size= (200, 200), pos= (w/2 - 200, 120)):  
+            dpg.add_button(label= 'text', tag = 'text_b', width= 400)
+            dpg.add_button(label= '', tag= 'text_b_1', width= 400)
         draw_text()
-        with dpg.window(no_resize= True, no_background= True, no_close=True, no_title_bar= True, no_collapse= True, pos = (850, 400), autosize= True):
+        with dpg.window(no_resize= True, no_background= True, no_close=True, no_title_bar= True, no_collapse= True, pos = (850, 400), autosize= True, tag = 'input_w'):
             with dpg.group(horizontal= True, horizontal_spacing= 40):
-                dpg.add_text(default_value='Введите значение высоты', tag = 'speed_t')
-                dpg.add_listbox(items= alt_list, tag = 'list_alt', width= 150)
+                dpg.add_text(default_value='Введите значение высоты', tag = 'alt_t')
+                dpg.add_listbox(items= alt_list, tag = 'list_alt', width= 150, callback= show_alt_data)
             with dpg.group(horizontal= True):
-                dpg.add_text(default_value='Введите значение скорости', tag = 'alt_t')            
-                dpg.add_listbox(items= speed_list, tag = 'list_sp', width= 150)
+                dpg.add_text(default_value='Введите значение скорости', tag = 'speed_t')            
+                dpg.add_listbox(items= speed_list, tag = 'list_sp', width= 150, callback= show_speed_data)
     dpg.bind_item_font('list_sp', 'menu_f')
     dpg.bind_item_font('list_alt', 'menu_f')
     
@@ -373,6 +416,8 @@ def study_cal() -> None:
 def lable_w() -> None:
     if dpg.does_item_exist('text_w'):
         dpg.delete_item('text_w')
+    if dpg.does_item_exist('input_w'):
+        dpg.delete_item('input_w')
     with dpg.window(width= w+600, height=h+250, pos = (0, 0), no_title_bar= True, tag = 'lable_w'):
         dpg.add_text(pos = (w - 400, 0), default_value="Компьютерный тренажер \n   системы 'Кодер'", tag = 'lable_text')
         with dpg.viewport_drawlist(front= True, tag = 'lable_logo'):
