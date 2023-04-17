@@ -165,7 +165,7 @@ def show_alt_data() -> None:
     if dpg.does_item_exist('input_s'):
         dpg.delete_item('input_s')
     if not dpg.does_item_exist('input_a'):
-        with dpg.window(no_resize= True, no_background= True, no_close=True, no_title_bar= True, no_collapse= True, pos = (750, 400), autosize= True, tag = 'input_a'):
+        with dpg.window(no_resize= True, no_background= True, no_close=True, no_title_bar= True, no_collapse= True, pos = (730, 400), autosize= True, tag = 'input_a'):
             with dpg.group(horizontal= True, horizontal_spacing= 40):
                 dpg.add_text(default_value='Введите значение высоты', tag = 'alt_t')
                 dpg.add_listbox(items= alt_list, tag = 'list_alt', width= 150, callback= show_alt_data)
@@ -189,8 +189,8 @@ def show_speed_data() -> None:
     if dpg.does_item_exist('input_a'):
         dpg.delete_item('input_a')
     if not dpg.does_item_exist('input_s'):
-        with dpg.window(no_resize= True, no_background= True, no_close=True, no_title_bar= True, no_collapse= True, pos = (750, 400), autosize= True, tag = 'input_s'):
-            with dpg.group(horizontal= True, parent= 'std_w'):
+        with dpg.window(no_resize= True, no_background= True, no_close=True, no_title_bar= True, no_collapse= True, pos = (730, 400), autosize= True, tag = 'input_s'):
+            with dpg.group(horizontal= True):
                 dpg.add_text(default_value='Введите значение скорости', tag = 'speed_t')            
                 dpg.add_listbox(items= speed_list, tag = 'list_sp', width= 150, callback= show_speed_data)
     dpg.bind_item_font('list_sp', 'menu_f')
@@ -360,9 +360,9 @@ MODE:str = 'lb'
 def std_mode_1() -> None:
     global MODE
     if not dpg.does_item_exist('std_w'):        
-        with dpg.window(no_resize= True, no_background= True, no_close=True, no_title_bar= True, no_collapse= True, pos = (730, 550), autosize= True, tag = 'std_w'):
-            dpg.add_text(default_value= '\tПриветсвуем вас в \nтренажере системы "Кодер!', tag = 'std_txt', pos = (150,0))
-            dpg.add_text(default_value= 'Включите тумблеры, чтобы начать \n процесс градуирования прибора', tag = 'std_txt_1', pos = (130,80))
+        with dpg.window(no_resize= True, no_background= True, no_close=True, no_title_bar= True, no_collapse= True, pos = (730, 540), autosize= True, tag = 'std_w'):
+            dpg.add_text(default_value= '\tПриветсвуем вас в \nтренажере системы "Кодер!"', tag = 'std_txt', pos = (150,0))
+            dpg.add_text(default_value= '\tВключите тумблеры: ПИТ, САМ1, СИЛ1, САМ2, \nСИЛ2, чтобы начать процесс градуирования прибора', tag = 'std_txt_1', pos = (60,80))
             dpg.add_text(default_value= '', tag = 'std_txt_2', pos = (130,100))
             # dpg.add_button(label='Дальше', callback= next)
     dpg.bind_item_font('std_txt', 'menu_f')
@@ -407,10 +407,10 @@ def std_mode_4() -> None:
 alt_list:list[str] = ['5000', '4000', '3000', '2000', '1000', '50']
 def std_mode_5() -> None:
     global MODE
-    dpg.set_value('std_txt', 'Подаем поочередно \nзначения высоты из меню \n"ВВОД ПАРАМЕТРОВ\n\nЕсли данные значения высоты \nсовпадают со значениями \nтаблицы, то прибор полностью \nисправен"')
+    dpg.set_value('std_txt', 'Подаем поочередно \nзначения высоты из меню \n"ВВОД ПАРАМЕТРОВ"\nЕсли данные значения скорости \nсовпадают со значениями \nтаблицы, то прибор полностью \nисправен \n\nДля возврата назад нажимаем \nкнопку ОТМЕНА"')
     dpg.set_item_pos('std_txt', (200, 0))
     if not dpg.does_item_exist('i_0'):
-        with dpg.group(horizontal= False, pos= (10,0), parent='std_w'):
+        with dpg.group(horizontal= False, pos= (10,0), parent='std_w', tag = 'tb_1'):
             with dpg.group(horizontal= True ):
                 dpg.add_text(default_value=  'КОД', tag = 'i_0')
                 dpg.add_text(default_value=  'ВЫСОТА', tag = 'i_1')
@@ -436,6 +436,64 @@ def std_mode_5() -> None:
             dpg.bind_item_font(f'i_{i}', 'menu_f')
     dpg.set_value('std_txt_1', '')
     dpg.set_value('std_txt_2', '')
+    if (not dpg.does_item_exist('list_alt')) and counter == 20 and len(dpg.get_item_label('text_b_1')) == 0:
+        MODE = 'st_6'
+
+def std_mode_6() -> None:
+    global MODE
+    if dpg.does_item_exist('tb_1'):
+        dpg.delete_item('tb_1')
+    dpg.set_value('std_txt', '\tДля градуировки скорости выбираем необходимый номер \nдатчика, о есть АС 48, нажатием кнопки ВВОД')
+    dpg.set_value('std_txt_1', '')
+    dpg.set_item_pos('std_txt', (10, 0))
+    if counter == 23 and len(dpg.get_item_label('text_b_1')) > 0:
+        MODE = 'st_7'
+
+def std_mode_7() -> None:
+    global MODE
+    dpg.set_value('std_txt', 'Подаем поочередно \nзначения высоты из меню \n"ВВОД ПАРАМЕТРОВ"\nЕсли данные значения скорости \nсовпадают со значениями \nтаблицы, то прибор полностью \nисправен \n\nДля возврата назад нажимаем \nкнопку ОТМЕНА"')
+    dpg.set_item_pos('std_txt', (200, 0))
+    if not dpg.does_item_exist('i_0'):
+        with dpg.group(horizontal= False, pos= (10,0), parent='std_w', tag = 'tb_1'):
+            with dpg.group(horizontal= True ):
+                dpg.add_text(default_value=  'КОД', tag = 'i_0')
+                dpg.add_text(default_value=  'СКОРОСТЬ', tag = 'i_1')
+            with dpg.group(horizontal= True ):
+                dpg.add_text(default_value=  '40', tag = 'i_2')
+                dpg.add_text(default_value=  '400', tag = 'i_3')
+            with dpg.group(horizontal= True ):
+                dpg.add_text(default_value=  '5А', tag = 'i_4')
+                dpg.add_text(default_value=  '350', tag = 'i_5')
+            with dpg.group(horizontal= True ):
+                dpg.add_text(default_value=  '74', tag = 'i_6')
+                dpg.add_text(default_value=  '300', tag = 'i_7')
+            with dpg.group(horizontal= True ):
+                dpg.add_text(default_value=  '8D', tag = 'i_8')
+                dpg.add_text(default_value=  '250', tag = 'i_9')
+            with dpg.group(horizontal= True):
+                dpg.add_text(default_value=  'A8', tag = 'i_10')
+                dpg.add_text(default_value=  '200', tag = 'i_11')
+            with dpg.group(horizontal= True):
+                dpg.add_text(default_value=  'C2', tag = 'i_12')
+                dpg.add_text(default_value=  '150', tag = 'i_13')
+        for i in range(14):
+            dpg.bind_item_font(f'i_{i}', 'menu_f')
+    dpg.set_value('std_txt_1', '')
+    dpg.set_value('std_txt_2', '')
+    if (not dpg.does_item_exist('list_alt')) and counter == 23 and len(dpg.get_item_label('text_b_1')) == 0:
+        MODE = 'st_8'
+
+def std_mode_8() -> None:
+    global MODE
+    if dpg.does_item_exist('tb_1'):
+        dpg.delete_item('tb_1')
+    dpg.set_value('std_txt', '\tВстроенный контроль и градуировка системы «Кодер» \nпроизведена.\n\tОпробуйте свои знания в режиме "КОНТРОЛЬ".\nДля этого нажмите "ВЫБОР РЕЖИМА" -> КОНТРОЛЬ')
+    dpg.set_value('std_txt_1', '')
+    dpg.set_item_pos('std_txt', (10, 0))
+    MODE = 'fin'
+
+
+
 
 
 speed_list:list[str] = ['400', '350', '300', '250', '200']
@@ -552,6 +610,12 @@ while dpg.is_dearpygui_running():
         std_mode_4()
     if MODE == 'st_5':
         std_mode_5()
+    if MODE == 'st_6':
+        std_mode_6()
+    if MODE == 'st_7':
+        std_mode_7()
+    if MODE == 'st_8':
+        std_mode_8()
     if MODE == 'lb':
         if dpg.does_item_exist('std_w'):
             dpg.delete_item('std_w')
