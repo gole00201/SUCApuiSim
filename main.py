@@ -6,7 +6,7 @@ w, h, ch, data = dpg.load_image('./img/1_main.jpg')
 
 
 dpg.create_context()
-dpg.create_viewport(title="Diplom", width=w+500, height=h-210, max_width=w+ 600, max_height=h, resizable=False)
+dpg.create_viewport(title="Diplom", width=w+500, height=h-240, max_width=w+ 600, max_height=h, resizable=False)
 
 
 with dpg.texture_registry(show=False):
@@ -15,11 +15,11 @@ with dpg.texture_registry(show=False):
         width=w, height=h, default_value=data, tag='img')
 
     w_t, h_t, ch, data_t = dpg.load_image('./img/sprites_tmp.jpg')
-    tmb = dpg.add_static_texture(
+    tmb_c = dpg.add_static_texture(
         width=w_t, height=h_t, default_value=data_t, tag='tmb')
 
     w_t, h_t, ch, data_t_off = dpg.load_image('./img/sprites_tmp_off.jpg')
-    tmb_off = dpg.add_static_texture(
+    tmb_off_c = dpg.add_static_texture(
         width=w_t, height=h_t, default_value=data_t_off, tag='tmb_off')
 
     w_l, h_l, ch, data_l = dpg.load_image('./img/sprites_led.jpg')
@@ -31,6 +31,21 @@ with dpg.texture_registry(show=False):
         width=w_l, height=h_l, default_value=data_l_on, tag='led_on')
     w_logo, h_logo, ch, data_logo = dpg.load_image('./img/logo.png') 
     logo = dpg.add_static_texture(width= w_logo, height= h_logo, default_value= data_logo, tag = 'logo')
+
+    w_tmb_l, h_tmb_l, ch, data_tmb_l = dpg.load_image('./img/tmb_logo.jpg')
+    tmb_logo = dpg.add_static_texture(width= w_tmb_l, height= h_tmb_l, default_value= data_tmb_l, tag = 'tmb_logo')
+
+    w_tmb_l_1, h_tmb_l_1, ch, data_tmb_l_1 = dpg.load_image('./img/tmb_logo_1.jpg')
+    tmb_logo_1 = dpg.add_static_texture(width= w_tmb_l_1, height= h_tmb_l_1, default_value= data_tmb_l_1, tag = 'tmb_logo_1')
+
+
+    w_cab_t, h_cab_tmb, ch, data_cab_tmb = dpg.load_image('./img/sprites_tmp_cab.jpg')
+    tmb = dpg.add_static_texture(width= w_cab_t, height= h_cab_tmb, default_value= data_cab_tmb, tag = 'tmb_c_off')
+    
+    w_cab_t, h_cab_tmb, ch, data_cab_tmb = dpg.load_image('./img/sprites_tmp_cab_on.jpg')
+    tmb_off = dpg.add_static_texture(width= w_cab_t, height= h_cab_tmb, default_value= data_cab_tmb, tag = 'tmb_c')
+    
+    
 
 list_main_menu:list[str] = ["ПАРАМЕТРЫ\nАC",
             "КОНТРОЛЬ\nПИТАНИЯ", "РК\n", "ДПК\n"]
@@ -56,14 +71,14 @@ with dpg.font_registry() as main_font_reg:
 
 # Координаты для тумблеров включения и текста
 
-tmbs_start_coord = (760, 180)
+tmbs_start_coord = (830, 110)
 text_coords = (430, 120)
 
 # Магия чисел с координатами следующих тумблеров (К начальной координате добовляем координату одного тумблера)
-coord_tmb_lst = {'pit_tmb': tmbs_start_coord, 'sam1_tmb': (tmbs_start_coord[0] + w_t, tmbs_start_coord[1]),
-                 'sil1_tmb': (tmbs_start_coord[0] + w_t*2, tmbs_start_coord[1]), 'sam2_tmb': (tmbs_start_coord[0] + w_t*3, tmbs_start_coord[1]),
-                 'sil2_tmb': (tmbs_start_coord[0] + w_t * 4, tmbs_start_coord[1])}
-tmb_size = (w_t, h_t)
+coord_tmb_lst = {'pit_tmb': tmbs_start_coord, 'sam1_tmb': (tmbs_start_coord[0], tmbs_start_coord[1] + h_cab_tmb + 5 ),
+                 'sil1_tmb': (tmbs_start_coord[0] + (w_cab_t + 92)*2, tmbs_start_coord[1]), 'sam2_tmb': (tmbs_start_coord[0] + (w_cab_t + 92)*2, tmbs_start_coord[1] + h_cab_tmb + 10),
+                 'sil2_tmb': (tmbs_start_coord[0] + (w_cab_t-20) * 4, tmbs_start_coord[1]+50)}
+tmb_size = (w_cab_t-25, h_cab_tmb-35)
 
 # Сложить два тьюпла чтобы в draw_image можно было быстро определить pmax и pmin
 
@@ -91,7 +106,7 @@ def draw_text(text=""):
 # Позиция другая, поэтому отрисовываем тумблер котроля отдельной функциекй
 
 
-def draw_cntr_tmb(name: str, tmb_s: int | str=tmb) -> None:
+def draw_cntr_tmb(name: str, tmb_s: int | str=tmb_c) -> None:
     dpg.delete_item(name)
     dpg.draw_image(tmb_s, (565, 450), (w_t+545, h_t+430), uv_min=(0, 0),
                    uv_max=(1.0, 1.0), parent='sprites_drawlist', tag=name)
@@ -165,7 +180,7 @@ def show_alt_data() -> None:
     if dpg.does_item_exist('input_s'):
         dpg.delete_item('input_s')
     if not dpg.does_item_exist('input_a'):
-        with dpg.window(no_resize= True, no_background= True, no_close=True, no_title_bar= True, no_collapse= True, pos = (730, 400), autosize= True, tag = 'input_a'):
+        with dpg.window(no_resize= True, no_background= True, no_close=True, no_title_bar= True, no_collapse= True, pos = (730, 360), autosize= True, tag = 'input_a'):
             with dpg.group(horizontal= True, horizontal_spacing= 40):
                 dpg.add_text(default_value='Введите значение высоты', tag = 'alt_t')
                 dpg.add_listbox(items= alt_list, tag = 'list_alt', width= 150, callback= show_alt_data)
@@ -173,23 +188,23 @@ def show_alt_data() -> None:
         dpg.bind_item_font('alt_t', 'menu_f')
     if dpg.get_value('pui_status') and counter == 20:
         if dpg.get_value('list_alt') == '5000':
-            draw_text('АС45      40\n4.565В      ')
+            draw_text('АС45      40\n0.790В      ')
         if dpg.get_value('list_alt') == '4000':
-            draw_text('АС45      60\n4.575В      ')
+            draw_text('АС45      60\n1.180В      ')
         if dpg.get_value('list_alt') == '3000':
-            draw_text('АС45      81\n4.515В      ')
+            draw_text('АС45      81\n1.590В      ')
         if dpg.get_value('list_alt') == '2000':
-            draw_text('АС45      А2\n4.525В      ')
+            draw_text('АС45      А2\n1.990В      ')
         if dpg.get_value('list_alt') == '1000':
-            draw_text('АС45      С4\n4.595В      ')
+            draw_text('АС45      С4\n2.410В      ')
         if dpg.get_value('list_alt') == '50':
-            draw_text('АС45      E2\n4.505В      ')
+            draw_text('АС45      E2\n2.780В      ')
         
 def show_speed_data() -> None:
     if dpg.does_item_exist('input_a'):
         dpg.delete_item('input_a')
     if not dpg.does_item_exist('input_s'):
-        with dpg.window(no_resize= True, no_background= True, no_close=True, no_title_bar= True, no_collapse= True, pos = (730, 400), autosize= True, tag = 'input_s'):
+        with dpg.window(no_resize= True, no_background= True, no_close=True, no_title_bar= True, no_collapse= True, pos = (730, 360), autosize= True, tag = 'input_s'):
             with dpg.group(horizontal= True):
                 dpg.add_text(default_value='Введите значение скорости', tag = 'speed_t')            
                 dpg.add_listbox(items= speed_list, tag = 'list_sp', width= 150, callback= show_speed_data)
@@ -197,17 +212,17 @@ def show_speed_data() -> None:
     dpg.bind_item_font('speed_t', 'menu_f')  
     if dpg.get_value('pui_status') and counter == 23:
         if dpg.get_value('list_sp') == '400':
-            draw_text('АС48      40\n4.565В      ')
+            draw_text('АС48      40\n0.790В      ')
         if dpg.get_value('list_sp') == '350':
-            draw_text('АС48      5A\n4.575В      ')
+            draw_text('АС48      5A\n1.110В      ')
         if dpg.get_value('list_sp') == '300':
-            draw_text('АС48      74\n4.515В      ')
+            draw_text('АС48      74\n1.430В      ')
         if dpg.get_value('list_sp') == '250':
-            draw_text('АС48      8D\n4.525В      ')
+            draw_text('АС48      8D\n1.730В      ')
         if dpg.get_value('list_sp') == '200':
-            draw_text('АС48      A8\n4.595В      ')
+            draw_text('АС48      A8\n2.070В      ')
         if dpg.get_value('list_sp') == '150':
-            draw_text('АС48      C2\n4.505В      ')
+            draw_text('АС48      C2\n2.390В      ')
 
 def in_():
     global counter_main, counter_sub, counter_as, counter
@@ -255,7 +270,7 @@ def contr_tmp():
         draw_cntr_tmb('contrl_tmp')
     else:
         dpg.set_value('bool_contrl', value=True)
-        draw_cntr_tmb('contrl_tmp', tmb_s=tmb_off)
+        draw_cntr_tmb('contrl_tmp', tmb_s=tmb_off_c)
 
 
 def pit_tmb():
@@ -332,12 +347,8 @@ with dpg.value_registry():
     dpg.add_string_value(default_value="КОДЕР\nГОТОВ", tag='main_string')
 
 
-list_of_cab_tmb:list[str] = ['ПИТ', 'САМ1', 'СИЛ1', 'САМ2', 'СИЛ2']
-
-
 def exit_cal() -> None:
     dpg.stop_dearpygui()
-
 
 with dpg.theme() as btn_theme:
         with dpg.theme_component(dpg.mvButton):
@@ -360,7 +371,7 @@ MODE:str = 'lb'
 def std_mode_1() -> None:
     global MODE
     if not dpg.does_item_exist('std_w'):        
-        with dpg.window(no_resize= True, no_background= True, no_close=True, no_title_bar= True, no_collapse= True, pos = (730, 540), autosize= True, tag = 'std_w'):
+        with dpg.window(no_resize= True, no_background= True, no_close=True, no_title_bar= True, no_collapse= True, pos = (730, 510), autosize= True, tag = 'std_w', no_move= True):
             dpg.add_text(default_value= '\tПриветсвуем вас в \nтренажере системы "Кодер!"', tag = 'std_txt', pos = (150,0))
             dpg.add_text(default_value= '\tВключите тумблеры: ПИТ, САМ1, СИЛ1, САМ2, \nСИЛ2, чтобы начать процесс градуирования прибора', tag = 'std_txt_1', pos = (60,80))
             dpg.add_text(default_value= '', tag = 'std_txt_2', pos = (130,100))
@@ -496,7 +507,7 @@ def std_mode_8() -> None:
 
 
 
-speed_list:list[str] = ['400', '350', '300', '250', '200']
+speed_list:list[str] = ['400', '350', '300', '250', '200', '150']
 def study_cal() -> None:
     global MODE
     MODE = 'st_1'
@@ -512,22 +523,24 @@ def study_cal() -> None:
     with dpg.viewport_drawlist(front=False, tag='sprites_drawlist'):
         dpg.draw_image(main, (0, 0), (w- 140, h- 165), uv_min=(
             0, 0), uv_max=(1, 1), tag='show_img')
+        dpg.draw_image(tmb_logo_1, (800, 90), (w_tmb_l + 760, h_tmb_l+10), uv_min= (0,0), uv_max = (1, 1), tag = 'show_tmb_logo_1')
+        dpg.draw_image(tmb_logo, (1100, 90), (w_tmb_l + 1060, h_tmb_l+10), uv_min= (0,0), uv_max = (1, 1), tag = 'show_tmb_logo')
         draw_tmb('pit_tmb')
         draw_tmb('sam1_tmb')
         draw_tmb('sil1_tmb')
         draw_tmb('sam2_tmb')
         draw_tmb('sil2_tmb')
-        dpg.draw_image(tmb, (565, 450), (w_t+545, h_t+430),
+        dpg.draw_image(tmb_c, (565, 450), (w_t+545, h_t+430),
                     uv_min=(0, 0), uv_max=(1, 1), tag='contrl_tmb')
         dpg.draw_image(led, (210, 310), (w_l+120, h_l+295),
                     uv_min=(0, 0), uv_max=(1, 1), tag='led_img')
-        dpg.draw_text(pos=(920, 80), text = 'КАБИНА', size= 60, color=(255, 255, 255, 255), tag = 'cab')
-        dpg.draw_text(pos=(910, 300), text= '   ВВОД\nПАРАМЕТРОВ', size = 40, tag = 'cab_par')
-        dpg.draw_text(pos=(920, 500), text= 'ПОДСКАЗКИ', size = 40, tag = 'cab_an')
-        i:int  = 0
-        for tmb_b in list_of_cab_tmb:
-            dpg.draw_text(pos =(list(coord_tmb_lst.values())[i][0] + 20, list(coord_tmb_lst.values())[i][1] - 27) , text = tmb_b, size = 30, tag = f'tmb{i}')
-            i+= 1
+        dpg.draw_text(pos=(950, 60), text = 'КАБИНА', size= 30, color=(255, 255, 255, 255), tag = 'cab')
+        dpg.draw_text(pos=(925, 300), text= '   ВВОД\nПАРАМЕТРОВ', size = 30, tag = 'cab_par')
+        dpg.draw_text(pos=(935, 455), text= 'ПОДСКАЗКИ', size = 30, tag = 'cab_an')
+        # i:int  = 0
+        # for tmb_b in list_of_cab_tmb:
+        dpg.draw_text(pos =(list(coord_tmb_lst.values())[0][0] + 150, list(coord_tmb_lst.values())[0][1] + 25) , text = 'ПИТ', size = 30, tag = f'tmb{0}')
+        #     i+= 1
         dpg.draw_line(p1 = (w-150, 0), p2 = (w-150, h - 165), thickness= 20)
     if dpg.does_item_exist('st_w'):
         dpg.delete_item('st_w')
@@ -560,8 +573,8 @@ def study_cal() -> None:
     dpg.bind_item_font('exit_b', 'menu_f')
     dpg.bind_item_font('cab', 'cab_font')
     dpg.bind_item_font('cab_an', 'cab_font')
-    for i in range(len(list_of_cab_tmb)):
-        dpg.bind_item_font(f'tmb{i}', 'cab_tmb_f')
+    # for i in range(len(list_of_cab_tmb)):
+    #     dpg.bind_item_font(f'tmb{i}', 'cab_tmb_f')
     dpg.bind_theme(btn_theme)
     # dpg.bind_item_theme('list_sp', menu_theme)
     # dpg.bind_item_theme('list_alt', menu_theme)
@@ -569,12 +582,14 @@ def study_cal() -> None:
     dpg.bind_item_theme('exit_b', menu_theme)
 
 def lable_w() -> None:
-    global MODE 
+    global MODE
+    if dpg.does_item_exist('input_s'):
+        dpg.delete_item('input_s')
+    if dpg.does_item_exist('input_a'):
+        dpg.delete_item('input_a') 
     MODE = 'lb'
     if dpg.does_item_exist('text_w'):
         dpg.delete_item('text_w')
-    if dpg.does_item_exist('input_w'):
-        dpg.delete_item('input_w')
     with dpg.window(width= w+500, height=h-165, pos = (0, 0), no_title_bar= True, tag = 'lable_w'):
         dpg.add_text(pos = (w - 200, 100), default_value="Компьютерный тренажер \n   системы 'Кодер'", tag = 'lable_text')
         with dpg.viewport_drawlist(front= True, tag = 'lable_logo'):
@@ -588,8 +603,6 @@ def lable_w() -> None:
     dpg.bind_item_theme('st_mode_act', menu_theme)    
     dpg.bind_item_theme('contrl_mode_act', menu_theme)
     dpg.bind_item_theme('exit_act', menu_theme)
-print(w+500)
-print(h-210)
 
 
 lable_w()
