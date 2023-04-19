@@ -7,6 +7,7 @@ w, h, ch, data = dpg.load_image('./img/1_main.jpg')
 
 dpg.create_context()
 dpg.create_viewport(title="Diplom", width=w+500, height=h-240, max_width=w+ 600, max_height=h, resizable=False)
+MODE:str = 'lb'
 
 
 with dpg.texture_registry(show=False):
@@ -367,13 +368,12 @@ with dpg.theme() as menu_theme:
         # dpg.add_theme_style(dpg.mvStyleVar_ButtonTextAlign, 0.5, category= dpg.mvThemeCat_Core)
         # dpg.add_theme_color(dpg.mvThemeCol_Text, (0, 255, 255, 255))
 
-MODE:str = 'lb'
 def std_mode_1() -> None:
     global MODE
     if not dpg.does_item_exist('std_w'):        
         with dpg.window(no_resize= True, no_background= True, no_close=True, no_title_bar= True, no_collapse= True, pos = (730, 510), autosize= True, tag = 'std_w', no_move= True):
-            dpg.add_text(default_value= '\tПриветсвуем вас в \nтренажере системы "Кодер!"', tag = 'std_txt', pos = (150,0))
-            dpg.add_text(default_value= '\tВключите тумблеры: ПИТ, САМ1, СИЛ1, САМ2, \nСИЛ2, чтобы начать процесс градуирования прибора', tag = 'std_txt_1', pos = (60,80))
+            dpg.add_text(default_value= '\tПриветствуем вас в \nтренажере системы "Кодер!"', tag = 'std_txt', pos = (150,0))
+            dpg.add_text(default_value= '\tВключить тумблеры: САМОЛЕТН 1, САМОЛЕТН 2, \nСИЛОВЫЕ1, СИЛОВЫЕ2 ,АЭР ПИТ, чтобы начать процесс \nградуирования прибора', tag = 'std_txt_1', pos = (60,80))
             dpg.add_text(default_value= '', tag = 'std_txt_2', pos = (130,100))
             # dpg.add_button(label='Дальше', callback= next)
     dpg.bind_item_font('std_txt', 'menu_f')
@@ -504,13 +504,158 @@ def std_mode_8() -> None:
     MODE = 'fin'
 
 
+def close_warn_w() -> None:
+    global MODE 
+    if dpg.does_item_exist('tr_w'):
+        dpg.delete_item('tr_w')
+    MODE = 'tr_1'
 
+
+def show_warn_w() -> None:
+    global MODE
+    if not dpg.does_item_exist('tr_w'):
+        with dpg.window(width= w + 500, height= h - 200, tag = 'tr_w', no_close= True, no_collapse=True, no_title_bar= True, pos = (0,0)):
+            dpg.add_text(default_value='\t\tСейчас вам будет необходимо выполнить градуировку системы "КОДЕР" по памяти. \nВ конце вы увидите вашу отценку. Учитывается: время выполнения, количество неправильных нажатий', pos = (190, 300))
+            dpg.bind_item_font(dpg.last_item(), 'menu_f')
+            dpg.add_button(label='ПРИСТУПИТЬ', pos = (500, 400), callback=close_warn_w)
+            dpg.bind_item_font(dpg.last_item(), 'cab_font')
+            dpg.bind_item_theme(dpg.last_item(), menu_theme)
+
+s_t:float = 0
+def train_1() -> None:
+    global MODE, s_t
+    s_t = time.time()
+    if not dpg.does_item_exist('std_w'):        
+        with dpg.window(no_resize= True, no_background= True, no_close=True, no_title_bar= True, no_collapse= True, pos = (950, 510), autosize= True, tag = 'std_w', no_move= True):
+            dpg.add_text(default_value= '', tag = 'std_txt', pos = (150,0))
+            dpg.add_text(default_value= '', tag = 'std_txt_1', pos = (60,80))
+            dpg.add_text(default_value= '', tag = 'std_txt_2', pos = (130,100))
+    if dpg.get_value('pui_status'):
+        MODE = 'tr_2'   
+
+
+def train_2() -> None:
+    global MODE
+    current_text:str = list_menu[dpg.get_value('in_pr')][counter]
+    if current_text == "AC\n1-24":
+        MODE = 'tr_3'
+
+         
+def train_3() -> None:
+    global MODE
+    current_text:str = list_menu[dpg.get_value('in_pr')][counter]
+    if current_text == "АС25":
+        MODE = 'tr_4'
+
+
+def train_4() -> None:
+    global MODE
+    if counter == 20 and len(dpg.get_item_label('text_b_1')) > 0:
+        MODE = 'tr_5'
+
+def train_5() -> None:
+    global MODE
+    if dpg.does_item_exist('cab_an'):
+        dpg.delete_item('cab_an')
+    dpg.draw_text(pos=(935, 455), text= 'ПОДСКАЗКИ', size = 30, tag = 'cab_an', parent= 'sprites_drawlist')
+    if not dpg.does_item_exist('i_0'):
+        with dpg.group(horizontal= False, pos= (10,0), parent='std_w', tag = 'tb_1'):
+            with dpg.group(horizontal= True ):
+                dpg.add_text(default_value=  'КОД', tag = 'i_0')
+                dpg.add_text(default_value=  'ВЫСОТА', tag = 'i_1')
+            with dpg.group(horizontal= True ):
+                dpg.add_text(default_value=  '40', tag = 'i_2')
+                dpg.add_text(default_value=  '5000', tag = 'i_3')
+            with dpg.group(horizontal= True ):
+                dpg.add_text(default_value=  '60', tag = 'i_4')
+                dpg.add_text(default_value=  '4000', tag = 'i_5')
+            with dpg.group(horizontal= True ):
+                dpg.add_text(default_value=  '81', tag = 'i_6')
+                dpg.add_text(default_value=  '3000', tag = 'i_7')
+            with dpg.group(horizontal= True ):
+                dpg.add_text(default_value=  'А2', tag = 'i_8')
+                dpg.add_text(default_value=  '2000', tag = 'i_9')
+            with dpg.group(horizontal= True):
+                dpg.add_text(default_value=  'С4', tag = 'i_10')
+                dpg.add_text(default_value=  '1000', tag = 'i_11')
+            with dpg.group(horizontal= True):
+                dpg.add_text(default_value=  'Е2', tag = 'i_12')
+                dpg.add_text(default_value=  '50', tag = 'i_13')
+        for i in range(14):
+            dpg.bind_item_font(f'i_{i}', 'menu_f')
+        dpg.bind_item_font('cab_an', 'cab_font')
+    if (not dpg.does_item_exist('list_alt')) and counter == 20 and len(dpg.get_item_label('text_b_1')) == 0:
+        MODE = 'tr_6'
+
+
+def train_6() -> None:
+    global MODE
+    if dpg.does_item_exist('tb_1'):
+        dpg.delete_item('tb_1')
+    if counter == 23 and len(dpg.get_item_label('text_b_1')) > 0:
+        MODE = 'tr_7'
+
+
+
+def train_7() -> None:
+    global MODE
+    if dpg.does_item_exist('cab_an'):
+        dpg.delete_item('cab_an')
+    dpg.draw_text(pos=(930, 455), text= 'ПОДСКАЗКИ', size = 30, tag = 'cab_an', parent= 'sprites_drawlist')
+    if not dpg.does_item_exist('i_0'):
+        with dpg.group(horizontal= False, pos= (10,0), parent='std_w', tag = 'tb_1'):
+            with dpg.group(horizontal= True ):
+                dpg.add_text(default_value=  'КОД', tag = 'i_0')
+                dpg.add_text(default_value=  'СКОРОСТЬ', tag = 'i_1')
+            with dpg.group(horizontal= True ):
+                dpg.add_text(default_value=  '40', tag = 'i_2')
+                dpg.add_text(default_value=  '400', tag = 'i_3')
+            with dpg.group(horizontal= True ):
+                dpg.add_text(default_value=  '5А', tag = 'i_4')
+                dpg.add_text(default_value=  '350', tag = 'i_5')
+            with dpg.group(horizontal= True ):
+                dpg.add_text(default_value=  '74', tag = 'i_6')
+                dpg.add_text(default_value=  '300', tag = 'i_7')
+            with dpg.group(horizontal= True ):
+                dpg.add_text(default_value=  '8D', tag = 'i_8')
+                dpg.add_text(default_value=  '250', tag = 'i_9')
+            with dpg.group(horizontal= True):
+                dpg.add_text(default_value=  'A8', tag = 'i_10')
+                dpg.add_text(default_value=  '200', tag = 'i_11')
+            with dpg.group(horizontal= True):
+                dpg.add_text(default_value=  'C2', tag = 'i_12')
+                dpg.add_text(default_value=  '150', tag = 'i_13')
+        for i in range(14):
+            dpg.bind_item_font(f'i_{i}', 'menu_f')
+        dpg.bind_item_font('cab_an', 'cab_font')
+    if (not dpg.does_item_exist('list_alt')) and counter == 23 and len(dpg.get_item_label('text_b_1')) == 0:
+        MODE = 'tr_8'
+    
+        
+def train_8() -> None:
+    global MODE, s_t
+    if dpg.does_item_exist('cab_an'):
+        dpg.delete_item('cab_an')
+    if dpg.does_item_exist('tb_1'):
+        dpg.delete_item('tb_1')
+    MODE = 'fin'
+    tr_time = time.time() - s_t
+    dpg.draw_text(pos=(895, 455), text= 'ВАШ РЕЗУЛЬТАТ', size = 30, tag = 'cab_an', parent = 'sprites_drawlist')
+    if tr_time < 30:
+        dpg.draw_text(pos=(945, 500), text= 'ОТЛИЧНО', size = 30, tag = 'cab_an_1', parent = 'sprites_drawlist')
+    if 30 < tr_time and tr_time < 45:
+        dpg.draw_text(pos=(955, 500), text= 'ХОРОШО', size = 30, tag = 'cab_an_12', parent = 'sprites_drawlist')
+    if 45 < tr_time and tr_time < 60:
+        dpg.draw_text(pos=(885, 500), text= 'УДОВЛЕТВОРИТЕЛЬНО', size = 30, tag = 'cab_an_13', parent = 'sprites_drawlist')
+    if 60 < tr_time:
+        dpg.draw_text(pos=(870, 500), text= 'НЕУДОВЛЕТВОРИТЕЛЬНО', size = 30, tag = 'cab_an_14', parent = 'sprites_drawlist')
+    dpg.bind_item_font('cab_an', 'cab_font')
 
 
 speed_list:list[str] = ['400', '350', '300', '250', '200', '150']
-def study_cal() -> None:
+def train_or_study_call(s:str, a_d:str , u_d:str) -> None:
     global MODE
-    MODE = 'st_1'
+    MODE = u_d
     dpg.delete_item('lable_w')
     dpg.delete_item('lable_logo')
     dpg.delete_item('sprites_drawlist')
@@ -536,10 +681,9 @@ def study_cal() -> None:
                     uv_min=(0, 0), uv_max=(1, 1), tag='led_img')
         dpg.draw_text(pos=(950, 60), text = 'КАБИНА', size= 30, color=(255, 255, 255, 255), tag = 'cab')
         dpg.draw_text(pos=(925, 300), text= '   ВВОД\nПАРАМЕТРОВ', size = 30, tag = 'cab_par')
-        dpg.draw_text(pos=(935, 455), text= 'ПОДСКАЗКИ', size = 30, tag = 'cab_an')
         # i:int  = 0
         # for tmb_b in list_of_cab_tmb:
-        dpg.draw_text(pos =(list(coord_tmb_lst.values())[0][0] + 150, list(coord_tmb_lst.values())[0][1] + 25) , text = 'ПИТ', size = 30, tag = f'tmb{0}')
+        dpg.draw_text(pos =(list(coord_tmb_lst.values())[0][0] + 150, list(coord_tmb_lst.values())[0][1]-5) , text = 'АЭР\nПИТ', size = 30, tag = f'tmb{0}')
         #     i+= 1
         dpg.draw_line(p1 = (w-150, 0), p2 = (w-150, h - 165), thickness= 20)
     if dpg.does_item_exist('st_w'):
@@ -572,7 +716,6 @@ def study_cal() -> None:
     dpg.bind_item_font('cho_mode', 'menu_f')
     dpg.bind_item_font('exit_b', 'menu_f')
     dpg.bind_item_font('cab', 'cab_font')
-    dpg.bind_item_font('cab_an', 'cab_font')
     # for i in range(len(list_of_cab_tmb)):
     #     dpg.bind_item_font(f'tmb{i}', 'cab_tmb_f')
     dpg.bind_theme(btn_theme)
@@ -580,6 +723,9 @@ def study_cal() -> None:
     # dpg.bind_item_theme('list_alt', menu_theme)
     dpg.bind_item_theme('cho_mode', menu_theme)
     dpg.bind_item_theme('exit_b', menu_theme)
+
+
+
 
 def lable_w() -> None:
     global MODE
@@ -594,8 +740,8 @@ def lable_w() -> None:
         dpg.add_text(pos = (w - 200, 100), default_value="Компьютерный тренажер \n   системы 'Кодер'", tag = 'lable_text')
         with dpg.viewport_drawlist(front= True, tag = 'lable_logo'):
             dpg.draw_image(logo, (580, 200), (w_logo + 90,h_logo - 120), uv_min=(0,0), uv_max= (1,1), tag = 'logo_img')
-        dpg.add_button(label= "Обучение", pos = (240, 250), callback= study_cal, tag = 'st_mode_act')
-        dpg.add_button(label= "Контроль", pos = (240, 350), tag = 'contrl_mode_act')
+        dpg.add_button(label= "Обучение", pos = (240, 250), callback= train_or_study_call,user_data= 'st_1' ,tag = 'st_mode_act')
+        dpg.add_button(label= "Контроль", pos = (240, 350), callback = train_or_study_call, user_data='tr_0', tag = 'contrl_mode_act')
         dpg.add_button(label= "Выход", pos = (280, 450), callback = exit_cal, tag = 'exit_act')
     dpg.bind_item_font('st_mode_act', 'cab_font')
     dpg.bind_item_font('contrl_mode_act', 'cab_font')
@@ -629,6 +775,25 @@ while dpg.is_dearpygui_running():
         std_mode_7()
     if MODE == 'st_8':
         std_mode_8()
+    if MODE == 'tr_0':
+        show_warn_w()
+    if MODE == 'tr_1':
+        train_1()
+    if MODE == 'tr_2':
+        train_2()
+    if MODE == 'tr_3':
+        train_3()
+    if MODE == 'tr_4':
+        train_4()
+    if MODE == 'tr_5':
+        train_5()
+    if MODE == 'tr_6':
+        train_6()
+    if MODE == 'tr_7':
+        train_7()
+    if MODE == 'tr_8':
+        train_8()
+
     if MODE == 'lb':
         if dpg.does_item_exist('std_w'):
             dpg.delete_item('std_w')
