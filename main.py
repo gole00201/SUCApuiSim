@@ -365,17 +365,14 @@ with dpg.theme() as menu_theme:
         dpg.add_theme_color(dpg.mvThemeCol_Text, (255,255,255,255))
         dpg.add_theme_color(dpg.mvThemeCol_ButtonActive, (0, 255, 255, 255), category= dpg.mvThemeCat_Core)
         dpg.add_theme_color(dpg.mvThemeCol_ButtonHovered, (0, 125, 125, 255), category= dpg.mvThemeCat_Core)
-        # dpg.add_theme_style(dpg.mvStyleVar_ButtonTextAlign, 0.5, category= dpg.mvThemeCat_Core)
-        # dpg.add_theme_color(dpg.mvThemeCol_Text, (0, 255, 255, 255))
 
 def std_mode_1() -> None:
     global MODE
     if not dpg.does_item_exist('std_w'):        
         with dpg.window(no_resize= True, no_background= True, no_close=True, no_title_bar= True, no_collapse= True, pos = (730, 510), autosize= True, tag = 'std_w', no_move= True):
             dpg.add_text(default_value= '\tПриветствуем вас в \nтренажере системы "Кодер!"', tag = 'std_txt', pos = (150,0))
-            dpg.add_text(default_value= '\tВключить тумблеры: САМОЛЕТН 1, САМОЛЕТН 2, \nСИЛОВЫЕ1, СИЛОВЫЕ2 ,АЭР ПИТ, чтобы начать процесс \nградуирования прибора', tag = 'std_txt_1', pos = (60,80))
+            dpg.add_text(default_value= '\tВключить тумблеры: САМОЛЕТН1, САМОЛЕТН2, \nСИЛОВЫЕ1, СИЛОВЫЕ2 ,АЭР ПИТ, чтобы начать процесс \nградуирования прибора', tag = 'std_txt_1', pos = (60,80))
             dpg.add_text(default_value= '', tag = 'std_txt_2', pos = (130,100))
-            # dpg.add_button(label='Дальше', callback= next)
     dpg.bind_item_font('std_txt', 'menu_f')
     dpg.bind_item_font('std_txt_1', 'menu_f')
     dpg.bind_item_font('std_txt_2', 'menu_f')
@@ -793,7 +790,6 @@ while dpg.is_dearpygui_running():
         train_7()
     if MODE == 'tr_8':
         train_8()
-
     if MODE == 'lb':
         if dpg.does_item_exist('std_w'):
             dpg.delete_item('std_w')
