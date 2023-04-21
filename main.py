@@ -69,6 +69,8 @@ with dpg.font_registry() as main_font_reg:
         dpg.add_font_range_hint(dpg.mvFontRangeHint_Cyrillic)
     with dpg.font('./fonts/Cousine-Regular.ttf', 20, tag = 'menu_f'):
         dpg.add_font_range_hint(dpg.mvFontRangeHint_Cyrillic)
+    with dpg.font('./fonts/Cousine-Regular.ttf', 15, tag = 'menu_f_1'):
+        dpg.add_font_range_hint(dpg.mvFontRangeHint_Cyrillic)
 
 # Координаты для тумблеров включения и текста
 
@@ -415,45 +417,59 @@ def std_mode_4() -> None:
 alt_list:list[str] = ['5000', '4000', '3000', '2000', '1000', '50']
 def std_mode_5() -> None:
     global MODE
-    dpg.set_value('std_txt', 'Подать поочередно \nзначения высоты из меню \n"ВВОД ПАРАМЕТРОВ"\nи на основе данных, выдаваемых \nсистемой «Кодер» построить \nградуировочную таблицу и \nградуировочный график.\nДля возврата назад нажать \nкнопку ОТМЕНА"')
-    dpg.set_item_pos('std_txt', (250, 0))
+    dpg.set_value('std_txt', 'Подать поочередно \nзначения высоты из меню \n"ВВОД ПАРАМЕТРОВ" и на \nоснове данных, выдаваемых \nсистемой «Кодер» построить \nградуировочную таблицу и \nградуировочный график.\nДля возврата назад нажать \nкнопку ОТМЕНА"')
+    dpg.set_item_pos('std_txt', (330, 0))
     if not dpg.does_item_exist('i_0'):
-        with dpg.group(horizontal= False, pos= (10,0), parent='std_w', tag = 'tb_1'):
-            with dpg.group(horizontal= True ):
-                dpg.add_text(default_value=  'КОД', tag = 'i_0')
+        with dpg.group(horizontal= False, pos= (3,0), parent='std_w', tag = 'tb_1'):
+            with dpg.group(horizontal= True):
                 dpg.add_text(default_value=  'ВЫСОТА', tag = 'i_1')
                 dpg.add_text(default_value=  'НАПРЯЖЕНИЕ', tag = 'i_14')
-            with dpg.group(horizontal= True, horizontal_spacing= 25):
-                dpg.add_text(default_value=  '40', tag = 'i_2')
-                dpg.add_text(default_value=  '5000', tag = 'i_3')
-                # dpg.add_text(default_value= "")
-                dpg.add_text(default_value=  '0,79', tag = 'i_15')
-            with dpg.group(horizontal= True, horizontal_spacing= 25):
-                dpg.add_text(default_value=  '60', tag = 'i_4')
-                dpg.add_text(default_value=  '4000', tag = 'i_5')
-                dpg.add_text(default_value=  '1,11', tag = 'i_16')
-            with dpg.group(horizontal= True, horizontal_spacing= 25):
-                dpg.add_text(default_value=  '81', tag = 'i_6')
-                dpg.add_text(default_value=  '3000', tag = 'i_7')
-                # dpg.add_text(default_value="")
-                dpg.add_text(default_value=  '1,43', tag = 'i_17')
-            with dpg.group(horizontal= True, horizontal_spacing= 25):
-                dpg.add_text(default_value=  'А2', tag = 'i_8')
-                dpg.add_text(default_value=  '2000', tag = 'i_9')
-                # dpg.add_text(default_value="")
-                dpg.add_text(default_value=  '1,73', tag = 'i_18')
-            with dpg.group(horizontal= True, horizontal_spacing= 25):
-                dpg.add_text(default_value=  'С4', tag = 'i_10')
-                dpg.add_text(default_value=  '1000', tag = 'i_11')
-                # dpg.add_text(default_value="")
-                dpg.add_text(default_value=  '2,07', tag = 'i_19')
+                dpg.add_text(default_value=  'КОД', tag = 'i_0')
+                dpg.add_text(default_value=  ' ОБР.КОД', tag = 'i_21')
+                dpg.add_text(default_value=  ' СР.ЗНАЧ', tag = 'i_22')
             with dpg.group(horizontal= True, horizontal_spacing= 35):
-                dpg.add_text(default_value=  'Е2', tag = 'i_12')
-                dpg.add_text(default_value=  '50', tag = 'i_13')
+                dpg.add_text(default_value=  '5000', tag = 'i_3')
+                dpg.add_text(default_value=  '0,79', tag = 'i_15')
+                dpg.add_text(default_value=  '  40 ', tag = 'i_2')
+                dpg.add_text(default_value=  '39 ', tag = 'i_23')
+                dpg.add_text(default_value=  '39.5', tag = 'i_24')
+                # dpg.add_text(default_value= "")
+            with dpg.group(horizontal= True, horizontal_spacing= 35):
+                dpg.add_text(default_value=  '4000', tag = 'i_5')
+                dpg.add_text(default_value=  '1,18', tag = 'i_16')
+                dpg.add_text(default_value=  '  60 ', tag = 'i_4')
+                dpg.add_text(default_value=  '59 ', tag = 'i_25')
+                dpg.add_text(default_value=  '59,5', tag = 'i_26')
+            with dpg.group(horizontal= True, horizontal_spacing= 35):
+                dpg.add_text(default_value=  '3000', tag = 'i_7')
+                dpg.add_text(default_value=  '1,59', tag = 'i_17')
+                dpg.add_text(default_value=  '  81 ', tag = 'i_6')
+                dpg.add_text(default_value=  '80 ', tag = 'i_27')
+                dpg.add_text(default_value=  '80,5', tag = 'i_28')
                 # dpg.add_text(default_value="")
-                dpg.add_text(default_value=  '2,39', tag = 'i_20')
-        for i in range(21):
-            dpg.bind_item_font(f'i_{i}', 'menu_f')
+            with dpg.group(horizontal= True, horizontal_spacing= 35):
+                dpg.add_text(default_value=  '2000', tag = 'i_9')
+                dpg.add_text(default_value=  '1,99', tag = 'i_18')
+                dpg.add_text(default_value=  '  А2 ', tag = 'i_8')
+                dpg.add_text(default_value=  'A2 ', tag = 'i_29')
+                dpg.add_text(default_value=  'A2 ', tag = 'i_30')
+                # dpg.add_text(default_value="")
+            with dpg.group(horizontal= True, horizontal_spacing= 35):
+                dpg.add_text(default_value=  '1000', tag = 'i_11')
+                dpg.add_text(default_value=  '2,41', tag = 'i_19')
+                dpg.add_text(default_value=  '  С4 ', tag = 'i_10')
+                dpg.add_text(default_value=  'C4 ', tag = 'i_31')
+                dpg.add_text(default_value=  'C4 ', tag = 'i_32')
+                # dpg.add_text(default_value="")
+            with dpg.group(horizontal= True, horizontal_spacing= 35):
+                dpg.add_text(default_value=  '50  ', tag = 'i_13')
+                dpg.add_text(default_value=  '2,78', tag = 'i_20')
+                dpg.add_text(default_value=  '  Е2 ', tag = 'i_12')
+                dpg.add_text(default_value=  'E2 ', tag = 'i_33')
+                dpg.add_text(default_value=  'E2 ', tag = 'i_34')
+                # dpg.add_text(default_value="")
+        for i in range(35):
+            dpg.bind_item_font(f'i_{i}', 'menu_f_1')
     dpg.set_value('std_txt_1', '')
     dpg.set_value('std_txt_2', '')
     if (not dpg.does_item_exist('list_alt')) and counter == 20 and len(dpg.get_item_label('text_b_1')) == 0:
@@ -471,40 +487,59 @@ def std_mode_6() -> None:
 
 def std_mode_7() -> None:
     global MODE
-    dpg.set_value('std_txt', 'Подать поочередно \nзначения высоты из меню \n"ВВОД ПАРАМЕТРОВ"\nи на основе данных, выдаваемых \nсистемой «Кодер» построить \nградуировочную таблицу и \nградуировочный график.\nДля возврата назад нажать \nкнопку ОТМЕНА"')
-    dpg.set_item_pos('std_txt', (260, 0))
+    dpg.set_value('std_txt', 'Подать поочередно \nзначения высоты из меню \n"ВВОД ПАРАМЕТРОВ"и на \nоснове данных, выдаваемых \nсистемой «Кодер» построить \nградуировочную таблицу и \nградуировочный график.\nДля возврата назад нажать \nкнопку ОТМЕНА"')
+    dpg.set_item_pos('std_txt', (335, 0))
     if not dpg.does_item_exist('i_0'):
-        with dpg.group(horizontal= False, pos= (10,0), parent='std_w', tag = 'tb_1'):
-            with dpg.group(horizontal= True ):
-                dpg.add_text(default_value=  'КОД', tag = 'i_0')
+        with dpg.group(horizontal= False, pos= (3,0), parent='std_w', tag = 'tb_1'):
+            with dpg.group(horizontal= True):
                 dpg.add_text(default_value=  'СКОРОСТЬ', tag = 'i_1')
                 dpg.add_text(default_value=  'НАПРЯЖЕНИЕ', tag = 'i_14')
-            with dpg.group(horizontal= True, horizontal_spacing= 45 ):
-                dpg.add_text(default_value=  '40', tag = 'i_2')
-                dpg.add_text(default_value=  '400', tag = 'i_3')
-                dpg.add_text(default_value=  '0,79', tag = 'i_15')
-            with dpg.group(horizontal= True, horizontal_spacing= 45 ):
-                dpg.add_text(default_value=  '5А', tag = 'i_4')
-                dpg.add_text(default_value=  '250', tag = 'i_5')
-                dpg.add_text(default_value=  '1,11', tag = 'i_16')
-            with dpg.group(horizontal= True, horizontal_spacing= 45 ):
-                dpg.add_text(default_value=  '74', tag = 'i_6')
-                dpg.add_text(default_value=  '300', tag = 'i_7')
-                dpg.add_text(default_value=  '1,43', tag = 'i_17')
-            with dpg.group(horizontal= True, horizontal_spacing= 45 ):
-                dpg.add_text(default_value=  '8D', tag = 'i_8')
-                dpg.add_text(default_value=  '250', tag = 'i_9')
-                dpg.add_text(default_value=  '1,73', tag = 'i_18')
-            with dpg.group(horizontal= True, horizontal_spacing= 45 ):
-                dpg.add_text(default_value=  'A8', tag = 'i_10')
-                dpg.add_text(default_value=  '200', tag = 'i_11')
-                dpg.add_text(default_value=  '2,07', tag = 'i_19')
-            with dpg.group(horizontal= True, horizontal_spacing= 45 ):
-                dpg.add_text(default_value=  'C2', tag = 'i_12')
-                dpg.add_text(default_value=  '150', tag = 'i_13')
-                dpg.add_text(default_value=  '2,39', tag = 'i_20')
-        for i in range(21):
-            dpg.bind_item_font(f'i_{i}', 'menu_f')
+                dpg.add_text(default_value=  'КОД', tag = 'i_0')
+                dpg.add_text(default_value=  ' ОБР.КОД', tag = 'i_21')
+                dpg.add_text(default_value=  'СР.ЗНАЧ', tag = 'i_22')
+            with dpg.group(horizontal= True, horizontal_spacing= 35):
+                dpg.add_text(default_value=  '400 ', tag = 'i_3')
+                dpg.add_text(default_value=  '  0,79', tag = 'i_15')
+                dpg.add_text(default_value=  '  40', tag = 'i_2')
+                dpg.add_text(default_value=  '39 ', tag = 'i_23')
+                dpg.add_text(default_value=  '39.5', tag = 'i_24')
+                # dpg.add_text(default_value= "")
+            with dpg.group(horizontal= True, horizontal_spacing= 35):
+                dpg.add_text(default_value=  '350 ', tag = 'i_5')
+                dpg.add_text(default_value=  '  1,11', tag = 'i_16')
+                dpg.add_text(default_value=  '  5A', tag = 'i_4')
+                dpg.add_text(default_value=  '5A ', tag = 'i_25')
+                dpg.add_text(default_value=  '5A ', tag = 'i_26')
+            with dpg.group(horizontal= True, horizontal_spacing= 35):
+                dpg.add_text(default_value=  '300 ', tag = 'i_7')
+                dpg.add_text(default_value=  '  1,73', tag = 'i_17')
+                dpg.add_text(default_value=  '  74', tag = 'i_6')
+                dpg.add_text(default_value=  '73 ', tag = 'i_27')
+                dpg.add_text(default_value=  '73.5', tag = 'i_28')
+                # dpg.add_text(default_value="")
+            with dpg.group(horizontal= True, horizontal_spacing= 35):
+                dpg.add_text(default_value=  '250 ', tag = 'i_9')
+                dpg.add_text(default_value=  '  1,73', tag = 'i_18')
+                dpg.add_text(default_value=  '  8D', tag = 'i_8')
+                dpg.add_text(default_value=  '8D ', tag = 'i_29')
+                dpg.add_text(default_value=  '8D ', tag = 'i_30')
+                # dpg.add_text(default_value="")
+            with dpg.group(horizontal= True, horizontal_spacing= 35):
+                dpg.add_text(default_value=  '200 ', tag = 'i_11')
+                dpg.add_text(default_value=  '  2.07', tag = 'i_19')
+                dpg.add_text(default_value=  '  A8', tag = 'i_10')
+                dpg.add_text(default_value=  'A8 ', tag = 'i_31')
+                dpg.add_text(default_value=  'A8 ', tag = 'i_32')
+                # dpg.add_text(default_value="")
+            with dpg.group(horizontal= True, horizontal_spacing= 35):
+                dpg.add_text(default_value=  '150 ', tag = 'i_13')
+                dpg.add_text(default_value=  '  2,39', tag = 'i_20')
+                dpg.add_text(default_value=  '  C2', tag = 'i_12')
+                dpg.add_text(default_value=  'C2 ', tag = 'i_33')
+                dpg.add_text(default_value=  'C2 ', tag = 'i_34')
+                # dpg.add_text(default_value="")
+        for i in range(35):
+            dpg.bind_item_font(f'i_{i}', 'menu_f_1')
     dpg.set_value('std_txt_1', '')
     dpg.set_value('std_txt_2', '')
     if (not dpg.does_item_exist('list_alt')) and counter == 23 and len(dpg.get_item_label('text_b_1')) == 0:
@@ -531,9 +566,9 @@ def show_warn_w() -> None:
     global MODE
     if not dpg.does_item_exist('tr_w'):
         with dpg.window(width= w + 500, height= h - 200, tag = 'tr_w', no_close= True, no_collapse=True, no_title_bar= True, pos = (0,0)):
-            dpg.add_text(default_value='\t\tСейчас вам будет необходимо выполнить градуировку системы "КОДЕР" по памяти. \nВ конце вы увидите вашу отценку. Учитывается: время выполнения, количество неправильных нажатий', pos = (190, 300))
+            dpg.add_text(default_value='\t\t\tСейчас Вам будет необходимо произвести процесс градуировки системы "Кодер". \nВ конце Вы увидите вашу оценку. Учитывается: время выполнения, количество неправильных действий.', pos = (190, 300))
             dpg.bind_item_font(dpg.last_item(), 'menu_f')
-            dpg.add_button(label='ПРИСТУПИТЬ', pos = (500, 400), callback=close_warn_w)
+            dpg.add_button(label='ПРИСТУПИТЬ', pos = (550, 400), callback=close_warn_w)
             dpg.bind_item_font(dpg.last_item(), 'cab_font')
             dpg.bind_item_theme(dpg.last_item(), menu_theme)
 
@@ -542,7 +577,7 @@ def train_1() -> None:
     global MODE, s_t
     s_t = time.time()
     if not dpg.does_item_exist('std_w'):        
-        with dpg.window(no_resize= True, no_background= True, no_close=True, no_title_bar= True, no_collapse= True, pos = (950, 510), autosize= True, tag = 'std_w', no_move= True):
+        with dpg.window(no_resize= True, no_background= True, no_close=True, no_title_bar= True, no_collapse= True, pos = (710, 510), autosize= True, tag = 'std_w', no_move= True):
             dpg.add_text(default_value= '', tag = 'std_txt', pos = (150,0))
             dpg.add_text(default_value= '', tag = 'std_txt_1', pos = (60,80))
             dpg.add_text(default_value= '', tag = 'std_txt_2', pos = (130,100))
@@ -569,36 +604,29 @@ def train_4() -> None:
     if counter == 20 and len(dpg.get_item_label('text_b_1')) > 0:
         MODE = 'tr_5'
 
+
+table_header:list[str] = ['Высота', 'Напряжение', 'Код', 'Обр. код', 'Ср. знач']
 def train_5() -> None:
     global MODE
     if dpg.does_item_exist('cab_an'):
         dpg.delete_item('cab_an')
     dpg.draw_text(pos=(935, 455), text= 'ПОДСКАЗКИ', size = 30, tag = 'cab_an', parent= 'sprites_drawlist')
-    if not dpg.does_item_exist('i_0'):
-        with dpg.group(horizontal= False, pos= (10,0), parent='std_w', tag = 'tb_1'):
-            with dpg.group(horizontal= True ):
-                dpg.add_text(default_value=  'КОД', tag = 'i_0')
-                dpg.add_text(default_value=  'ВЫСОТА', tag = 'i_1')
-            with dpg.group(horizontal= True ):
-                dpg.add_text(default_value=  '40', tag = 'i_2')
-                dpg.add_text(default_value=  '5000', tag = 'i_3')
-            with dpg.group(horizontal= True ):
-                dpg.add_text(default_value=  '60', tag = 'i_4')
-                dpg.add_text(default_value=  '4000', tag = 'i_5')
-            with dpg.group(horizontal= True ):
-                dpg.add_text(default_value=  '81', tag = 'i_6')
-                dpg.add_text(default_value=  '3000', tag = 'i_7')
-            with dpg.group(horizontal= True ):
-                dpg.add_text(default_value=  'А2', tag = 'i_8')
-                dpg.add_text(default_value=  '2000', tag = 'i_9')
-            with dpg.group(horizontal= True):
-                dpg.add_text(default_value=  'С4', tag = 'i_10')
-                dpg.add_text(default_value=  '1000', tag = 'i_11')
-            with dpg.group(horizontal= True):
-                dpg.add_text(default_value=  'Е2', tag = 'i_12')
-                dpg.add_text(default_value=  '50', tag = 'i_13')
-        for i in range(14):
-            dpg.bind_item_font(f'i_{i}', 'menu_f')
+    if not dpg.does_item_exist('tb_1'):
+        with dpg.table(parent= 'std_w', tag = 'tb_1', pos = (0,0), header_row= False, borders_outerH=True, borders_outerV=True, borders_innerH=True, borders_innerV=True):
+            dpg.add_table_column(label= 'Высота', tag = 'h_1')
+            dpg.add_table_column(label= 'Напряжение', tag = 'h_2')
+            dpg.add_table_column(label= 'Код', tag = 'h_3')
+            dpg.add_table_column(label= 'Обр. код', tag = 'h_4')            
+            dpg.add_table_column(label= 'Ср. значение', tag = 'h_5')      
+            with dpg.table_row():
+                for i in range(0,5):
+                    dpg.add_text(default_value=table_header[i])
+                    dpg.bind_item_font(dpg.last_item(), 'menu_f')
+            for i in range(0, 5):
+                with dpg.table_row():
+                    for j in range(0, 5):
+                        dpg.add_text('          ')
+                        dpg.bind_item_font(dpg.last_item(), 'menu_f')
         dpg.bind_item_font('cab_an', 'cab_font')
     if (not dpg.does_item_exist('list_alt')) and counter == 20 and len(dpg.get_item_label('text_b_1')) == 0:
         MODE = 'tr_6'
@@ -618,31 +646,22 @@ def train_7() -> None:
     if dpg.does_item_exist('cab_an'):
         dpg.delete_item('cab_an')
     dpg.draw_text(pos=(930, 455), text= 'ПОДСКАЗКИ', size = 30, tag = 'cab_an', parent= 'sprites_drawlist')
-    if not dpg.does_item_exist('i_0'):
-        with dpg.group(horizontal= False, pos= (10,0), parent='std_w', tag = 'tb_1'):
-            with dpg.group(horizontal= True ):
-                dpg.add_text(default_value=  'КОД', tag = 'i_0')
-                dpg.add_text(default_value=  'СКОРОСТЬ', tag = 'i_1')
-            with dpg.group(horizontal= True ):
-                dpg.add_text(default_value=  '40', tag = 'i_2')
-                dpg.add_text(default_value=  '400', tag = 'i_3')
-            with dpg.group(horizontal= True ):
-                dpg.add_text(default_value=  '5А', tag = 'i_4')
-                dpg.add_text(default_value=  '350', tag = 'i_5')
-            with dpg.group(horizontal= True ):
-                dpg.add_text(default_value=  '74', tag = 'i_6')
-                dpg.add_text(default_value=  '300', tag = 'i_7')
-            with dpg.group(horizontal= True ):
-                dpg.add_text(default_value=  '8D', tag = 'i_8')
-                dpg.add_text(default_value=  '250', tag = 'i_9')
-            with dpg.group(horizontal= True):
-                dpg.add_text(default_value=  'A8', tag = 'i_10')
-                dpg.add_text(default_value=  '200', tag = 'i_11')
-            with dpg.group(horizontal= True):
-                dpg.add_text(default_value=  'C2', tag = 'i_12')
-                dpg.add_text(default_value=  '150', tag = 'i_13')
-        for i in range(14):
-            dpg.bind_item_font(f'i_{i}', 'menu_f')
+    if not dpg.does_item_exist('tb_1'):
+        with dpg.table(parent= 'std_w', tag = 'tb_1', pos = (0,0), header_row= False, borders_outerH=True, borders_outerV=True, borders_innerH=True, borders_innerV=True):
+            dpg.add_table_column(label= 'Высота', tag = 'h_1')
+            dpg.add_table_column(label= 'Напряжение', tag = 'h_2')
+            dpg.add_table_column(label= 'Код', tag = 'h_3')
+            dpg.add_table_column(label= 'Обр. код', tag = 'h_4')            
+            dpg.add_table_column(label= 'Ср. значение', tag = 'h_5')      
+            with dpg.table_row():
+                for i in range(0,5):
+                    dpg.add_text(default_value=table_header[i])
+                    dpg.bind_item_font(dpg.last_item(), 'menu_f')
+            for i in range(0, 5):
+                with dpg.table_row():
+                    for j in range(0, 5):
+                        dpg.add_text('          ')
+                        dpg.bind_item_font(dpg.last_item(), 'menu_f')
         dpg.bind_item_font('cab_an', 'cab_font')
     if (not dpg.does_item_exist('list_alt')) and counter == 23 and len(dpg.get_item_label('text_b_1')) == 0:
         MODE = 'tr_8'
@@ -657,13 +676,13 @@ def train_8() -> None:
     MODE = 'fin'
     tr_time = time.time() - s_t
     dpg.draw_text(pos=(895, 455), text= 'ВАШ РЕЗУЛЬТАТ', size = 30, tag = 'cab_an', parent = 'sprites_drawlist')
-    if tr_time < 30:
+    if tr_time < 120:
         dpg.draw_text(pos=(945, 500), text= 'ОТЛИЧНО', size = 30, tag = 'cab_an_1', parent = 'sprites_drawlist')
-    if 30 < tr_time and tr_time < 45:
+    if 120 < tr_time and tr_time < 150:
         dpg.draw_text(pos=(955, 500), text= 'ХОРОШО', size = 30, tag = 'cab_an_12', parent = 'sprites_drawlist')
-    if 45 < tr_time and tr_time < 60:
+    if 150 < tr_time and tr_time < 180:
         dpg.draw_text(pos=(885, 500), text= 'УДОВЛЕТВОРИТЕЛЬНО', size = 30, tag = 'cab_an_13', parent = 'sprites_drawlist')
-    if 60 < tr_time:
+    if 180 < tr_time:
         dpg.draw_text(pos=(870, 500), text= 'НЕУДОВЛЕТВОРИТЕЛЬНО', size = 30, tag = 'cab_an_14', parent = 'sprites_drawlist')
     dpg.bind_item_font('cab_an', 'cab_font')
 
@@ -699,7 +718,7 @@ def train_or_study_call(s:str, a_d:str , u_d:str) -> None:
         dpg.draw_text(pos=(925, 300), text= '   ВВОД\nПАРАМЕТРОВ', size = 30, tag = 'cab_par')
         # i:int  = 0
         # for tmb_b in list_of_cab_tmb:
-        dpg.draw_text(pos =(list(coord_tmb_lst.values())[0][0] + 150, list(coord_tmb_lst.values())[0][1]-5) , text = 'АЭР\nПИТ', size = 30, tag = f'tmb{0}')
+        dpg.draw_text(pos =(list(coord_tmb_lst.values())[0][0] + 150, list(coord_tmb_lst.values())[0][1]+ 150) , text = 'АЭР\nПИТ', size = 30, tag = f'tmb{0}')
         #     i+= 1
         dpg.draw_line(p1 = (w-150, 0), p2 = (w-150, h - 165), thickness= 20)
     if dpg.does_item_exist('st_w'):
