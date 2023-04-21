@@ -72,14 +72,14 @@ with dpg.font_registry() as main_font_reg:
 
 # Координаты для тумблеров включения и текста
 
-tmbs_start_coord = (830, 110)
+tmbs_start_coord = (830, 80)
 text_coords = (430, 120)
 
 # Магия чисел с координатами следующих тумблеров (К начальной координате добовляем координату одного тумблера)
-coord_tmb_lst = {'pit_tmb': tmbs_start_coord, 'sam1_tmb': (tmbs_start_coord[0], tmbs_start_coord[1] + h_cab_tmb + 5 ),
-                 'sil1_tmb': (tmbs_start_coord[0] + (w_cab_t + 92)*2, tmbs_start_coord[1]), 'sam2_tmb': (tmbs_start_coord[0] + (w_cab_t + 92)*2, tmbs_start_coord[1] + h_cab_tmb + 10),
+coord_tmb_lst = {'pit_tmb': tmbs_start_coord, 'sam1_tmb': (tmbs_start_coord[0], tmbs_start_coord[1] + h_cab_tmb),
+                 'sil1_tmb': (tmbs_start_coord[0] + (w_cab_t + 92)*2, tmbs_start_coord[1]), 'sam2_tmb': (tmbs_start_coord[0] + (w_cab_t + 92)*2, tmbs_start_coord[1] + h_cab_tmb),
                  'sil2_tmb': (tmbs_start_coord[0] + (w_cab_t-20) * 4, tmbs_start_coord[1]+50)}
-tmb_size = (w_cab_t-25, h_cab_tmb-35)
+tmb_size = (w_cab_t-25, h_cab_tmb-45)
 
 # Сложить два тьюпла чтобы в draw_image можно было быстро определить pmax и pmin
 
@@ -370,8 +370,8 @@ def std_mode_1() -> None:
     global MODE
     if not dpg.does_item_exist('std_w'):        
         with dpg.window(no_resize= True, no_background= True, no_close=True, no_title_bar= True, no_collapse= True, pos = (730, 510), autosize= True, tag = 'std_w', no_move= True):
-            dpg.add_text(default_value= '\tПриветствуем вас в \nтренажере системы "Кодер!"', tag = 'std_txt', pos = (150,0))
-            dpg.add_text(default_value= '\tВключить тумблеры: САМОЛЕТН1, САМОЛЕТН2, \nСИЛОВЫЕ1, СИЛОВЫЕ2 ,АЭР ПИТ, чтобы начать процесс \nградуирования прибора', tag = 'std_txt_1', pos = (60,80))
+            dpg.add_text(default_value= '\tПриветствуем Вас в \nтренажере системы "Кодер"!', tag = 'std_txt', pos = (150,0))
+            dpg.add_text(default_value= '\tВключить тумблеры: САМОЛЕТН N1, САМОЛЕТН N2, \nСИЛОВЫЕ N1, СИЛОВЫЕ N2 ,АЭР ПИТ, чтобы выполнить \nвстроенный контроль системы', tag = 'std_txt_1', pos = (60,80))
             dpg.add_text(default_value= '', tag = 'std_txt_2', pos = (130,100))
     dpg.bind_item_font('std_txt', 'menu_f')
     dpg.bind_item_font('std_txt_1', 'menu_f')
@@ -382,9 +382,9 @@ def std_mode_1() -> None:
 def std_mode_2() -> None:
     global MODE
     current_text:str = list_menu[dpg.get_value('in_pr')][counter]
-    dpg.set_value('std_txt', '\tПроисходит встроенный контроль системы «Кодер», \nсовершаемый во время предполетной подготовки.')
-    dpg.set_value('std_txt_1', '\tЕсли прибор исправен, то единичные индикаторы БРПИ, \nЗБН, ПУИ, РЕГИСТРАЦИЯ под общим названием ИСПРАВНОСТЬ \nдолжны светиться, единичный индикатор ОТКАЗ \nКОДЕР не должен светиться, а на экране загорается \nфраза КОДЕР ГОТОВ.')
-    dpg.set_value('std_txt_2', '\tДалее производим градуировку системы «Кодер»\nНажатием кнопки V выбираем группу  ПАРАМЕТРЫ АС и \nнажимаем ВВОД')
+    dpg.set_value('std_txt', '\tПроисходит встроенный контроль системы «Кодер»')
+    dpg.set_value('std_txt_1', '\tЕсли система исправна, то единичные индикаторы БРПИ, \nЗБН, ПУИ, РЕГИСТРАЦИЯ под общим названием ИСПРАВНОСТЬ \nдолжны светиться, единичный индикатор ОТКАЗ \nКОДЕР не должен светиться, а на экране загорается \nфраза КОДЕР ГОТОВ.')
+    dpg.set_value('std_txt_2', '\tДалее произвести градуировку системы «Кодер»\nНажатием стрелки вверх или вниз выбрать группу ПАРАМЕТРЫ \nАС. Для выбора нужной группы нажать кнопку ВВОД.')
     dpg.set_item_pos('std_txt', (10, 0))
     dpg.set_item_pos('std_txt_1', (10, 40))
     dpg.set_item_pos('std_txt_2', (10, 138))
@@ -393,7 +393,7 @@ def std_mode_2() -> None:
         
 def std_mode_3() -> None:
     global MODE
-    dpg.set_value('std_txt', '\tВыбираем группу АС 25-48 нажатием кнопки ВВОД')
+    dpg.set_value('std_txt', '\tВыбрать группу АС 25-48 нажатием кнопки ВВОД')
     dpg.set_value('std_txt_1', '')
     dpg.set_value('std_txt_2', '')
     dpg.set_item_pos('std_txt', (10, 0))
@@ -403,7 +403,7 @@ def std_mode_3() -> None:
 
 def std_mode_4() -> None:
     global MODE
-    dpg.set_value('std_txt', '\tДля градуировки высоты выбираем необходимый номер \nдатчика, то есть  АС 45, нажатием кнопки ВВОД')
+    dpg.set_value('std_txt', '\tДля градуировки высоты выбрать необходимый номер \nдатчика, то есть  АС 45, нажатием кнопки ВВОД')
     dpg.set_value('std_txt_1', '')
     dpg.set_value('std_txt_2', '')
     dpg.set_item_pos('std_txt', (10, 0))
@@ -415,32 +415,44 @@ def std_mode_4() -> None:
 alt_list:list[str] = ['5000', '4000', '3000', '2000', '1000', '50']
 def std_mode_5() -> None:
     global MODE
-    dpg.set_value('std_txt', 'Подаем поочередно \nзначения высоты из меню \n"ВВОД ПАРАМЕТРОВ"\nЕсли данные значения скорости \nсовпадают со значениями \nтаблицы, то прибор полностью \nисправен \n\nДля возврата назад нажимаем \nкнопку ОТМЕНА"')
-    dpg.set_item_pos('std_txt', (200, 0))
+    dpg.set_value('std_txt', 'Подать поочередно \nзначения высоты из меню \n"ВВОД ПАРАМЕТРОВ"\nи на основе данных, выдаваемых \nсистемой «Кодер» построить \nградуировочную таблицу и \nградуировочный график.\nДля возврата назад нажать \nкнопку ОТМЕНА"')
+    dpg.set_item_pos('std_txt', (250, 0))
     if not dpg.does_item_exist('i_0'):
         with dpg.group(horizontal= False, pos= (10,0), parent='std_w', tag = 'tb_1'):
             with dpg.group(horizontal= True ):
                 dpg.add_text(default_value=  'КОД', tag = 'i_0')
                 dpg.add_text(default_value=  'ВЫСОТА', tag = 'i_1')
-            with dpg.group(horizontal= True ):
+                dpg.add_text(default_value=  'НАПРЯЖЕНИЕ', tag = 'i_14')
+            with dpg.group(horizontal= True, horizontal_spacing= 25):
                 dpg.add_text(default_value=  '40', tag = 'i_2')
                 dpg.add_text(default_value=  '5000', tag = 'i_3')
-            with dpg.group(horizontal= True ):
+                # dpg.add_text(default_value= "")
+                dpg.add_text(default_value=  '0,79', tag = 'i_15')
+            with dpg.group(horizontal= True, horizontal_spacing= 25):
                 dpg.add_text(default_value=  '60', tag = 'i_4')
                 dpg.add_text(default_value=  '4000', tag = 'i_5')
-            with dpg.group(horizontal= True ):
+                dpg.add_text(default_value=  '1,11', tag = 'i_16')
+            with dpg.group(horizontal= True, horizontal_spacing= 25):
                 dpg.add_text(default_value=  '81', tag = 'i_6')
                 dpg.add_text(default_value=  '3000', tag = 'i_7')
-            with dpg.group(horizontal= True ):
+                # dpg.add_text(default_value="")
+                dpg.add_text(default_value=  '1,43', tag = 'i_17')
+            with dpg.group(horizontal= True, horizontal_spacing= 25):
                 dpg.add_text(default_value=  'А2', tag = 'i_8')
                 dpg.add_text(default_value=  '2000', tag = 'i_9')
-            with dpg.group(horizontal= True):
+                # dpg.add_text(default_value="")
+                dpg.add_text(default_value=  '1,73', tag = 'i_18')
+            with dpg.group(horizontal= True, horizontal_spacing= 25):
                 dpg.add_text(default_value=  'С4', tag = 'i_10')
                 dpg.add_text(default_value=  '1000', tag = 'i_11')
-            with dpg.group(horizontal= True):
+                # dpg.add_text(default_value="")
+                dpg.add_text(default_value=  '2,07', tag = 'i_19')
+            with dpg.group(horizontal= True, horizontal_spacing= 35):
                 dpg.add_text(default_value=  'Е2', tag = 'i_12')
                 dpg.add_text(default_value=  '50', tag = 'i_13')
-        for i in range(14):
+                # dpg.add_text(default_value="")
+                dpg.add_text(default_value=  '2,39', tag = 'i_20')
+        for i in range(21):
             dpg.bind_item_font(f'i_{i}', 'menu_f')
     dpg.set_value('std_txt_1', '')
     dpg.set_value('std_txt_2', '')
@@ -451,7 +463,7 @@ def std_mode_6() -> None:
     global MODE
     if dpg.does_item_exist('tb_1'):
         dpg.delete_item('tb_1')
-    dpg.set_value('std_txt', '\tДля градуировки скорости выбираем необходимый номер \nдатчика, о есть АС 48, нажатием кнопки ВВОД')
+    dpg.set_value('std_txt', '\tДля градуировки скорости выбрать необходимый номер \nдатчика, то есть АС 48, нажатием кнопки ВВОД')
     dpg.set_value('std_txt_1', '')
     dpg.set_item_pos('std_txt', (10, 0))
     if counter == 23 and len(dpg.get_item_label('text_b_1')) > 0:
@@ -459,32 +471,39 @@ def std_mode_6() -> None:
 
 def std_mode_7() -> None:
     global MODE
-    dpg.set_value('std_txt', 'Подаем поочередно \nзначения высоты из меню \n"ВВОД ПАРАМЕТРОВ"\nЕсли данные значения скорости \nсовпадают со значениями \nтаблицы, то прибор полностью \nисправен \n\nДля возврата назад нажимаем \nкнопку ОТМЕНА"')
-    dpg.set_item_pos('std_txt', (200, 0))
+    dpg.set_value('std_txt', 'Подать поочередно \nзначения высоты из меню \n"ВВОД ПАРАМЕТРОВ"\nи на основе данных, выдаваемых \nсистемой «Кодер» построить \nградуировочную таблицу и \nградуировочный график.\nДля возврата назад нажать \nкнопку ОТМЕНА"')
+    dpg.set_item_pos('std_txt', (260, 0))
     if not dpg.does_item_exist('i_0'):
         with dpg.group(horizontal= False, pos= (10,0), parent='std_w', tag = 'tb_1'):
             with dpg.group(horizontal= True ):
                 dpg.add_text(default_value=  'КОД', tag = 'i_0')
                 dpg.add_text(default_value=  'СКОРОСТЬ', tag = 'i_1')
-            with dpg.group(horizontal= True ):
+                dpg.add_text(default_value=  'НАПРЯЖЕНИЕ', tag = 'i_14')
+            with dpg.group(horizontal= True, horizontal_spacing= 45 ):
                 dpg.add_text(default_value=  '40', tag = 'i_2')
                 dpg.add_text(default_value=  '400', tag = 'i_3')
-            with dpg.group(horizontal= True ):
+                dpg.add_text(default_value=  '0,79', tag = 'i_15')
+            with dpg.group(horizontal= True, horizontal_spacing= 45 ):
                 dpg.add_text(default_value=  '5А', tag = 'i_4')
-                dpg.add_text(default_value=  '350', tag = 'i_5')
-            with dpg.group(horizontal= True ):
+                dpg.add_text(default_value=  '250', tag = 'i_5')
+                dpg.add_text(default_value=  '1,11', tag = 'i_16')
+            with dpg.group(horizontal= True, horizontal_spacing= 45 ):
                 dpg.add_text(default_value=  '74', tag = 'i_6')
                 dpg.add_text(default_value=  '300', tag = 'i_7')
-            with dpg.group(horizontal= True ):
+                dpg.add_text(default_value=  '1,43', tag = 'i_17')
+            with dpg.group(horizontal= True, horizontal_spacing= 45 ):
                 dpg.add_text(default_value=  '8D', tag = 'i_8')
                 dpg.add_text(default_value=  '250', tag = 'i_9')
-            with dpg.group(horizontal= True):
+                dpg.add_text(default_value=  '1,73', tag = 'i_18')
+            with dpg.group(horizontal= True, horizontal_spacing= 45 ):
                 dpg.add_text(default_value=  'A8', tag = 'i_10')
                 dpg.add_text(default_value=  '200', tag = 'i_11')
-            with dpg.group(horizontal= True):
+                dpg.add_text(default_value=  '2,07', tag = 'i_19')
+            with dpg.group(horizontal= True, horizontal_spacing= 45 ):
                 dpg.add_text(default_value=  'C2', tag = 'i_12')
                 dpg.add_text(default_value=  '150', tag = 'i_13')
-        for i in range(14):
+                dpg.add_text(default_value=  '2,39', tag = 'i_20')
+        for i in range(21):
             dpg.bind_item_font(f'i_{i}', 'menu_f')
     dpg.set_value('std_txt_1', '')
     dpg.set_value('std_txt_2', '')
@@ -495,7 +514,7 @@ def std_mode_8() -> None:
     global MODE
     if dpg.does_item_exist('tb_1'):
         dpg.delete_item('tb_1')
-    dpg.set_value('std_txt', '\tВстроенный контроль и градуировка системы «Кодер» \nпроизведена.\n\tОпробуйте свои знания в режиме "КОНТРОЛЬ".\nДля этого нажмите "ВЫБОР РЕЖИМА" -> КОНТРОЛЬ')
+    dpg.set_value('std_txt', '\tВстроенный контроль и градуировка системы «Кодер» \nпроизведена, выключить систему.\n\tОпробуйте свои знания в режиме "КОНТРОЛЬ".\nДля этого нажмите "ВЫБОР РЕЖИМА" -> КОНТРОЛЬ')
     dpg.set_value('std_txt_1', '')
     dpg.set_item_pos('std_txt', (10, 0))
     MODE = 'fin'
