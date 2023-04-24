@@ -1,12 +1,11 @@
 import dearpygui.dearpygui as dpg
 import time
 import numpy as np
-import sys
 w, h, ch, data = dpg.load_image('./img/1_main.jpg')
 
 
 dpg.create_context()
-dpg.create_viewport(title="Diplom", width=w+500, height=h-240, max_width=w+ 600, max_height=h, resizable=False)
+dpg.create_viewport(title='BSRPI "KODER"', width=w+500, height=h-240, max_width=w+ 600, max_height=h, resizable=False)
 MODE:str = 'lb'
 
 
@@ -487,7 +486,7 @@ def std_mode_6() -> None:
 
 def std_mode_7() -> None:
     global MODE
-    dpg.set_value('std_txt', 'Подать поочередно \nзначения высоты из меню \n"ВВОД ПАРАМЕТРОВ"и на \nоснове данных, выдаваемых \nсистемой «Кодер» построить \nградуировочную таблицу и \nградуировочный график.\nДля возврата назад нажать \nкнопку ОТМЕНА"')
+    dpg.set_value('std_txt', 'Подать поочередно \nзначения скорости из меню \n"ВВОД ПАРАМЕТРОВ"и на \nоснове данных, выдаваемых \nсистемой «Кодер» построить \nградуировочную таблицу и \nградуировочный график.\nДля возврата назад нажать \nкнопку ОТМЕНА"')
     dpg.set_item_pos('std_txt', (335, 0))
     if not dpg.does_item_exist('i_0'):
         with dpg.group(horizontal= False, pos= (3,0), parent='std_w', tag = 'tb_1'):
@@ -512,7 +511,7 @@ def std_mode_7() -> None:
                 dpg.add_text(default_value=  '5A ', tag = 'i_26')
             with dpg.group(horizontal= True, horizontal_spacing= 35):
                 dpg.add_text(default_value=  '300 ', tag = 'i_7')
-                dpg.add_text(default_value=  '  1,73', tag = 'i_17')
+                dpg.add_text(default_value=  '  1,43', tag = 'i_17')
                 dpg.add_text(default_value=  '  74', tag = 'i_6')
                 dpg.add_text(default_value=  '73 ', tag = 'i_27')
                 dpg.add_text(default_value=  '73.5', tag = 'i_28')
@@ -665,8 +664,6 @@ def train_7() -> None:
         dpg.bind_item_font('cab_an', 'cab_font')
     if (not dpg.does_item_exist('list_alt')) and counter == 23 and len(dpg.get_item_label('text_b_1')) == 0:
         MODE = 'tr_8'
-    
-        
 def train_8() -> None:
     global MODE, s_t
     if dpg.does_item_exist('cab_an'):
@@ -676,11 +673,11 @@ def train_8() -> None:
     MODE = 'fin'
     tr_time = time.time() - s_t
     dpg.draw_text(pos=(895, 455), text= 'ВАШ РЕЗУЛЬТАТ', size = 30, tag = 'cab_an', parent = 'sprites_drawlist')
-    if tr_time < 120:
+    if tr_time < 140:
         dpg.draw_text(pos=(945, 500), text= 'ОТЛИЧНО', size = 30, tag = 'cab_an_1', parent = 'sprites_drawlist')
-    if 120 < tr_time and tr_time < 150:
+    if 140 < tr_time and tr_time <= 160:
         dpg.draw_text(pos=(955, 500), text= 'ХОРОШО', size = 30, tag = 'cab_an_12', parent = 'sprites_drawlist')
-    if 150 < tr_time and tr_time < 180:
+    if 160 < tr_time and tr_time <= 180:
         dpg.draw_text(pos=(885, 500), text= 'УДОВЛЕТВОРИТЕЛЬНО', size = 30, tag = 'cab_an_13', parent = 'sprites_drawlist')
     if 180 < tr_time:
         dpg.draw_text(pos=(870, 500), text= 'НЕУДОВЛЕТВОРИТЕЛЬНО', size = 30, tag = 'cab_an_14', parent = 'sprites_drawlist')
@@ -747,7 +744,7 @@ def train_or_study_call(s:str, a_d:str , u_d:str) -> None:
             dpg.add_button(label= 'text', tag = 'text_b', width= 400)
             dpg.add_button(label= '', tag= 'text_b_1', width= 400)
         draw_text()
-    dpg.bind_item_font('cab_par', 'cab_font')  
+    dpg.bind_item_font('cab_par', 'cab_font')
     dpg.bind_item_font('cho_mode', 'menu_f')
     dpg.bind_item_font('exit_b', 'menu_f')
     dpg.bind_item_font('cab', 'cab_font')
@@ -767,7 +764,7 @@ def lable_w() -> None:
     if dpg.does_item_exist('input_s'):
         dpg.delete_item('input_s')
     if dpg.does_item_exist('input_a'):
-        dpg.delete_item('input_a') 
+        dpg.delete_item('input_a')
     MODE = 'lb'
     if dpg.does_item_exist('text_w'):
         dpg.delete_item('text_w')
@@ -781,14 +778,13 @@ def lable_w() -> None:
     dpg.bind_item_font('st_mode_act', 'cab_font')
     dpg.bind_item_font('contrl_mode_act', 'cab_font')
     dpg.bind_item_font('exit_act', 'cab_font')
-    dpg.bind_item_theme('st_mode_act', menu_theme)    
+    dpg.bind_item_theme('st_mode_act', menu_theme)
     dpg.bind_item_theme('contrl_mode_act', menu_theme)
     dpg.bind_item_theme('exit_act', menu_theme)
 
 
 lable_w()
 
-    
 
 dpg.bind_font('Main_font')
 dpg.setup_dearpygui()
@@ -798,9 +794,9 @@ while dpg.is_dearpygui_running():
         std_mode_1()
     if MODE == 'st_2':
         std_mode_2()
-    if MODE =='st_3':
+    if MODE == 'st_3':
         std_mode_3()
-    if MODE =='st_4':
+    if MODE == 'st_4':
         std_mode_4()
     if MODE == 'st_5':
         std_mode_5()
@@ -833,6 +829,3 @@ while dpg.is_dearpygui_running():
             dpg.delete_item('std_w')
     dpg.render_dearpygui_frame()
 dpg.destroy_context()
-
-
-
