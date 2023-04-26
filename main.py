@@ -176,8 +176,7 @@ def dwn_arrow():
         else:
             counter = counter - 1
         draw_text(list_menu[dpg.get_value('in_pr')][counter])
-        # print(counter)
- 
+    
 def show_alt_data() -> None:
     if dpg.does_item_exist('input_s'):
         dpg.delete_item('input_s')
@@ -260,7 +259,7 @@ def out_():
     
 
 
-# Колбэки для тумблеров
+
 
 def contr_tmp():
     # Узнали в каком сейчас состоянии тумблер
@@ -334,9 +333,8 @@ def sil2_tmb():
         draw_tmb('sil2_tmb', tmb_state=tmb_off)
     check_tmb()
 
-# Нужды ДПГ по отрисовке
 
-
+# Глобальные переменные
 with dpg.value_registry():
     dpg.add_bool_value(default_value=False, tag="pui_status")
     dpg.add_bool_value(default_value=False, tag="bool_contrl")
@@ -348,10 +346,11 @@ with dpg.value_registry():
     dpg.add_int_value(default_value=0, tag="in_pr")
     dpg.add_string_value(default_value="КОДЕР\nГОТОВ", tag='main_string')
 
-
+# Вызывается когда нажимаем выход
 def exit_cal() -> None:
     dpg.stop_dearpygui()
 
+# Темы по отрисовке чего бы то ни было 
 with dpg.theme() as btn_theme:
         with dpg.theme_component(dpg.mvButton):
             dpg.add_theme_color(dpg.mvThemeCol_Button, (0, 0, 0, 0), category=dpg.mvThemeCat_Core)
@@ -367,12 +366,15 @@ with dpg.theme() as menu_theme:
         dpg.add_theme_color(dpg.mvThemeCol_ButtonActive, (0, 255, 255, 255), category= dpg.mvThemeCat_Core)
         dpg.add_theme_color(dpg.mvThemeCol_ButtonHovered, (0, 125, 125, 255), category= dpg.mvThemeCat_Core)
 
+# Если выбрали режим обучения последовательно вызываются функции связанные с обучением
+# В конце каждой функции проверяется условие для включения следующей
+# Этап обучения храниться в глобальной переменной MODE
 def std_mode_1() -> None:
     global MODE
     if not dpg.does_item_exist('std_w'):        
         with dpg.window(no_resize= True, no_background= True, no_close=True, no_title_bar= True, no_collapse= True, pos = (730, 510), autosize= True, tag = 'std_w', no_move= True):
             dpg.add_text(default_value= '\tПриветствуем Вас в \nтренажере системы "Кодер"!', tag = 'std_txt', pos = (150,0))
-            dpg.add_text(default_value= '\tВключить тумблеры: САМОЛЕТН N1, САМОЛЕТН N2, \nСИЛОВЫЕ N1, СИЛОВЫЕ N2 ,АЭР ПИТ, чтобы выполнить \nвстроенный контроль системы', tag = 'std_txt_1', pos = (60,80))
+            dpg.add_text(default_value= '\tВключить выключатели: САМОЛЕТН N1, САМОЛЕТН N2, \nАЭР ПИТ, СИЛОВЫЕ N1, СИЛОВЫЕ N2 , чтобы выполнить \nвстроенный контроль системы', tag = 'std_txt_1', pos = (60,80))
             dpg.add_text(default_value= '', tag = 'std_txt_2', pos = (130,100))
     dpg.bind_item_font('std_txt', 'menu_f')
     dpg.bind_item_font('std_txt_1', 'menu_f')
@@ -385,16 +387,16 @@ def std_mode_2() -> None:
     current_text:str = list_menu[dpg.get_value('in_pr')][counter]
     dpg.set_value('std_txt', '\tПроисходит встроенный контроль системы «Кодер»')
     dpg.set_value('std_txt_1', '\tЕсли система исправна, то единичные индикаторы БРПИ, \nЗБН, ПУИ, РЕГИСТРАЦИЯ под общим названием ИСПРАВНОСТЬ \nдолжны светиться, единичный индикатор ОТКАЗ \nКОДЕР не должен светиться, а на экране загорается \nфраза КОДЕР ГОТОВ.')
-    dpg.set_value('std_txt_2', '\tДалее произвести градуировку системы «Кодер»\nНажатием стрелки вверх или вниз выбрать группу ПАРАМЕТРЫ \nАС. Для выбора нужной группы нажать кнопку ВВОД.')
+    dpg.set_value('std_txt_2', '\tДалее произвести градуировку системы «Кодер»\nНажатием кнопок, обозначеных стрелками, выбрать группу \nПАРАМЕТРЫ АС (параметры аналоговых сигналов). \nДля выбора нужной группы нажать кнопку ВВОД.')
     dpg.set_item_pos('std_txt', (10, 0))
-    dpg.set_item_pos('std_txt_1', (10, 40))
-    dpg.set_item_pos('std_txt_2', (10, 138))
+    dpg.set_item_pos('std_txt_1', (10, 20))
+    dpg.set_item_pos('std_txt_2', (10, 118))
     if current_text == "AC\n1-24":
         MODE = 'st_3'
         
 def std_mode_3() -> None:
     global MODE
-    dpg.set_value('std_txt', '\tВыбрать группу АС 25-48 нажатием кнопки ВВОД')
+    dpg.set_value('std_txt', '\tВыбрать группу параметров АС 25-48 нажатием кнопки \n\t\t\t\t\t\tВВОД')
     dpg.set_value('std_txt_1', '')
     dpg.set_value('std_txt_2', '')
     dpg.set_item_pos('std_txt', (10, 0))
@@ -404,7 +406,7 @@ def std_mode_3() -> None:
 
 def std_mode_4() -> None:
     global MODE
-    dpg.set_value('std_txt', '\tДля градуировки высоты выбрать необходимый номер \nдатчика, то есть  АС 45, нажатием кнопки ВВОД')
+    dpg.set_value('std_txt', '\tДля градуировки параметра высоты выбрать необходимый \nканал , то есть  АС 45, нажатием кнопки ВВОД')
     dpg.set_value('std_txt_1', '')
     dpg.set_value('std_txt_2', '')
     dpg.set_item_pos('std_txt', (10, 0))
@@ -416,15 +418,15 @@ def std_mode_4() -> None:
 alt_list:list[str] = ['5000', '4000', '3000', '2000', '1000', '50']
 def std_mode_5() -> None:
     global MODE
-    dpg.set_value('std_txt', 'Подать поочередно \nзначения высоты из меню \n"ВВОД ПАРАМЕТРОВ" и на \nоснове данных, выдаваемых \nсистемой «Кодер» построить \nградуировочную таблицу и \nградуировочный график.\nДля возврата назад нажать \nкнопку ОТМЕНА"')
+    dpg.set_value('std_txt', 'Подать поочередно \nзначения высоты из меню \n"ВВОД ПАРАМЕТРОВ" и на \nоснове данных, выдаваемых \nсистемой «Кодер» заполнить \nградуировочную таблицу и \nпостроить градуировочный \nграфик.Для возврата назад \nнажать кнопку ОТМЕНА"')
     dpg.set_item_pos('std_txt', (330, 0))
     if not dpg.does_item_exist('i_0'):
         with dpg.group(horizontal= False, pos= (3,0), parent='std_w', tag = 'tb_1'):
             with dpg.group(horizontal= True):
                 dpg.add_text(default_value=  'ВЫСОТА', tag = 'i_1')
-                dpg.add_text(default_value=  'НАПРЯЖЕНИЕ', tag = 'i_14')
-                dpg.add_text(default_value=  'КОД', tag = 'i_0')
-                dpg.add_text(default_value=  ' ОБР.КОД', tag = 'i_21')
+                dpg.add_text(default_value=  'НАПРЯЖ', tag = 'i_14')
+                dpg.add_text(default_value=  'ПРЯМ.ХОД', tag = 'i_0')
+                dpg.add_text(default_value=  ' ОБР.ХОД', tag = 'i_21')
                 dpg.add_text(default_value=  ' СР.ЗНАЧ', tag = 'i_22')
             with dpg.group(horizontal= True, horizontal_spacing= 35):
                 dpg.add_text(default_value=  '5000', tag = 'i_3')
@@ -486,15 +488,15 @@ def std_mode_6() -> None:
 
 def std_mode_7() -> None:
     global MODE
-    dpg.set_value('std_txt', 'Подать поочередно \nзначения скорости из меню \n"ВВОД ПАРАМЕТРОВ"и на \nоснове данных, выдаваемых \nсистемой «Кодер» построить \nградуировочную таблицу и \nградуировочный график.\nДля возврата назад нажать \nкнопку ОТМЕНА"')
+    dpg.set_value('std_txt', 'Подать поочередно \nзначения скорости из меню \n"ВВОД ПАРАМЕТРОВ"и на \nоснове данных, выдаваемых \nсистемой «Кодер» заполнить \nградуировочную таблицу и \n построить градуировочный \nграфик.Для возврата назад \nнажать кнопку ОТМЕНА"')
     dpg.set_item_pos('std_txt', (335, 0))
     if not dpg.does_item_exist('i_0'):
         with dpg.group(horizontal= False, pos= (3,0), parent='std_w', tag = 'tb_1'):
             with dpg.group(horizontal= True):
                 dpg.add_text(default_value=  'СКОРОСТЬ', tag = 'i_1')
-                dpg.add_text(default_value=  'НАПРЯЖЕНИЕ', tag = 'i_14')
-                dpg.add_text(default_value=  'КОД', tag = 'i_0')
-                dpg.add_text(default_value=  ' ОБР.КОД', tag = 'i_21')
+                dpg.add_text(default_value=  'НАПРЯЖ', tag = 'i_14')
+                dpg.add_text(default_value=  'ПРЯМ.ХОД', tag = 'i_0')
+                dpg.add_text(default_value=  ' ОБР.ХОД', tag = 'i_21')
                 dpg.add_text(default_value=  'СР.ЗНАЧ', tag = 'i_22')
             with dpg.group(horizontal= True, horizontal_spacing= 35):
                 dpg.add_text(default_value=  '400 ', tag = 'i_3')
@@ -561,6 +563,8 @@ def close_warn_w() -> None:
     MODE = 'tr_1'
 
 
+# Контроль. Если нажимаем "контроль", то в переменную MODE помещается значение 'tr_0'.
+# По такому же принципу, как и в обучении, это значение будет меняться в зависимости от этапа тренировки
 def show_warn_w() -> None:
     global MODE
     if not dpg.does_item_exist('tr_w'):
@@ -570,6 +574,7 @@ def show_warn_w() -> None:
             dpg.add_button(label='ПРИСТУПИТЬ', pos = (550, 400), callback=close_warn_w)
             dpg.bind_item_font(dpg.last_item(), 'cab_font')
             dpg.bind_item_theme(dpg.last_item(), menu_theme)
+
 
 s_t:float = 0
 def train_1() -> None:
@@ -604,7 +609,7 @@ def train_4() -> None:
         MODE = 'tr_5'
 
 
-table_header:list[str] = ['Высота', 'Напряжение', 'Код', 'Обр. код', 'Ср. знач']
+table_header:list[str] = ['Высота', 'Напряжение', 'Прям.ход', 'Обр. ход', 'Ср. знач']
 def train_5() -> None:
     global MODE
     if dpg.does_item_exist('cab_an'):
@@ -639,7 +644,7 @@ def train_6() -> None:
         MODE = 'tr_7'
 
 
-
+table_header:list[str] = ['Скорость', 'Напряжение', 'Прям.ход', 'Обр. ход', 'Ср. знач']
 def train_7() -> None:
     global MODE
     if dpg.does_item_exist('cab_an'):
@@ -684,6 +689,7 @@ def train_8() -> None:
     dpg.bind_item_font('cab_an', 'cab_font')
 
 
+# Функция отрисовки главного окна как для тренировки, так для обучения
 speed_list:list[str] = ['400', '350', '300', '250', '200', '150']
 def train_or_study_call(s:str, a_d:str , u_d:str) -> None:
     global MODE
@@ -713,10 +719,8 @@ def train_or_study_call(s:str, a_d:str , u_d:str) -> None:
                     uv_min=(0, 0), uv_max=(1, 1), tag='led_img')
         dpg.draw_text(pos=(950, 60), text = 'КАБИНА', size= 30, color=(255, 255, 255, 255), tag = 'cab')
         dpg.draw_text(pos=(925, 300), text= '   ВВОД\nПАРАМЕТРОВ', size = 30, tag = 'cab_par')
-        # i:int  = 0
-        # for tmb_b in list_of_cab_tmb:
+        dpg.draw_text(pos=(930, 455), text= 'ПОДСКАЗКИ', size = 30, tag = 'cab_an')
         dpg.draw_text(pos =(list(coord_tmb_lst.values())[0][0] + 150, list(coord_tmb_lst.values())[0][1]+ 150) , text = 'АЭР\nПИТ', size = 30, tag = f'tmb{0}')
-        #     i+= 1
         dpg.draw_line(p1 = (w-150, 0), p2 = (w-150, h - 165), thickness= 20)
     if dpg.does_item_exist('st_w'):
         dpg.delete_item('st_w')
@@ -748,17 +752,13 @@ def train_or_study_call(s:str, a_d:str , u_d:str) -> None:
     dpg.bind_item_font('cho_mode', 'menu_f')
     dpg.bind_item_font('exit_b', 'menu_f')
     dpg.bind_item_font('cab', 'cab_font')
-    # for i in range(len(list_of_cab_tmb)):
-    #     dpg.bind_item_font(f'tmb{i}', 'cab_tmb_f')
     dpg.bind_theme(btn_theme)
-    # dpg.bind_item_theme('list_sp', menu_theme)
-    # dpg.bind_item_theme('list_alt', menu_theme)
     dpg.bind_item_theme('cho_mode', menu_theme)
     dpg.bind_item_theme('exit_b', menu_theme)
 
 
 
-
+# Функция отрисовки окна с выбором режимов
 def lable_w() -> None:
     global MODE
     if dpg.does_item_exist('input_s'):
@@ -790,6 +790,7 @@ dpg.bind_font('Main_font')
 dpg.setup_dearpygui()
 dpg.show_viewport()
 while dpg.is_dearpygui_running():
+    # Пока мы обрабатываем графику, проверяем состояние переменной MODE и вызываем функцию этапа обучения/контроля
     if MODE == 'st_1':
         std_mode_1()
     if MODE == 'st_2':
