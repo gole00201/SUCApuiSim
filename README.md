@@ -27,7 +27,8 @@
         python3.10 main.py
 
 
-
+## Принцип работы
+![flowgraph](./img/flow.png)
 
 ## Планы
 
