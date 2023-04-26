@@ -28,7 +28,7 @@
 
 
 ## Принцип работы
-![flowgraph](./img/flow.png)
+![flowgraph](./img/flow.pdf)
 
 ## Планы
 
